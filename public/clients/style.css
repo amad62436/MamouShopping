@@ -19,6 +19,11 @@
 @import url(css/font-awesome.min.css);
 @import url(css/default/icofont.min.css);
 /* Preloader CSS */
+.nav-item.active .nav-link {
+  color: #007bff; /* Couleur du lien actif */
+  font-weight: bold; /* Texte en gras pour le lien actif */
+}
+
 #preloader {
   position: fixed;
   z-index: 99999999;

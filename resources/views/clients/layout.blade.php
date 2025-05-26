@@ -12,10 +12,10 @@
         <title>@yield('title')</title>
 
         <!-- Favicon  -->
-        <link rel="icon" href="clients/img/core-img/favicon.ico">
+        <link rel="icon" href="{{asset('clients/img/core-img/favicon.ico')}}">
 
         <!-- Style CSS -->
-        <link rel="stylesheet" href="clients/style.css">
+        <link rel="stylesheet" href="{{asset('clients/style.css')}}">
 
     </head>
 
@@ -53,14 +53,40 @@
                                 <!-- Nav -->
                                 <div class="classynav">
                                     <ul>
-                                        <li><a href="#">Home</a>
-                                            <ul class="dropdown">
-                                                <li><a href="index-1.html">Home - 1</a></li>
-                                                <li><a href="index-2.html">Home - 2</a></li>
-                                                <li><a href="index-3.html">Home - 3</a></li>
-                                            </ul>
+                                        <!-- Accueil -->
+                                        <li class="nav-item {{ request()->is('/') ? 'active' : '' }}">
+                                            <a href="{{ url('/') }}" class="nav-link">
+                                                <strong>Accueil</strong>
+                                            </a>
                                         </li>
-                                        <li><a href="contact.html">Contact</a></li>
+                                
+                                        <!-- Outils Numériques -->
+                                        <li class="nav-item {{ request()->is('shop1') ? 'active' : '' }}">
+                                            <a href="{{ url('/shop1') }}" class="nav-link">
+                                                <strong>Outils Numériques</strong>
+                                            </a>
+                                        </li>
+                                
+                                        <!-- Produits Cosmotiques -->
+                                        <li class="nav-item {{ request()->is('shop2') ? 'active' : '' }}">
+                                            <a href="{{ url('/shop2') }}" class="nav-link">
+                                                <strong>Produits Cosmotiques</strong>
+                                            </a>
+                                        </li>
+                                
+                                        <!-- Autres Produits -->
+                                        <li class="nav-item {{ request()->is('shop3') ? 'active' : '' }}">
+                                            <a href="{{ url('/shop3') }}" class="nav-link">
+                                                <strong>Autres Produits</strong>
+                                            </a>
+                                        </li>
+                                
+                                        <!-- Contact -->
+                                        <li class="nav-item {{ request()->is('contact') ? 'active' : '' }}">
+                                            <a href="{{ url('/contact') }}" class="nav-link">
+                                                <strong>Contact</strong>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -117,7 +143,7 @@
                                             </ul>
                                         </div>
                                         <div class="cart-box">
-                                            <a href="checkout-1.html" class="btn btn-primary d-block">Checkout</a>
+                                            <a href="{{url('/cart')}}" class="btn btn-primary d-block">Voir le panier</a>
                                         </div>
                                     </div>
                                 </div>
@@ -143,7 +169,13 @@
         </header>
         <!-- Header Area end -->
 
+
+        {{-- Start Client --}}
+
         @yield('content')
+
+        {{-- End Client --}}
+
 
         <!-- Special Featured Area -->
     <section class="special_feature_area pt-5">
@@ -153,7 +185,7 @@
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="single_feature_area mb-5 d-flex align-items-center">
                         <div class="feature_icon">
-                            <i class="icofont-ship"></i>
+                            <i class="icofont-delivery-time"></i>
                         </div>
                         <div class="feature_content">
                             <h6>Free Shipping</h6>
@@ -223,9 +255,8 @@
                             </ul>
                             <div class="footer_social_area mt-50">
                                 <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
+                                <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                <a href="#"><i class="fa fa-telegram" aria-hidden="true"></i></a>
                                 <a href="#"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
                             </div>
                         </div>
@@ -235,23 +266,23 @@
         <!-- Footer Area -->
 
         <!-- jQuery (Necessary for All JavaScript Plugins) -->
-        <script src="clients/js/jquery.min.js"></script>
-        <script src="clients/js/popper.min.js"></script>
-        <script src="clients/js/bootstrap.min.js"></script>
-        <script src="clients/js/jquery.easing.min.js"></script>
-        <script src="clients/js/default/classy-nav.min.js"></script>
-        <script src="clients/js/owl.carousel.min.js"></script>
-        <script src="clients/js/default/scrollup.js"></script>
-        <script src="clients/js/waypoints.min.js"></script>
-        <script src="clients/js/jquery.countdown.min.js"></script>
-        <script src="clients/js/jquery.counterup.min.js"></script>
-        <script src="clients/js/jquery-ui.min.js"></script>
-        <script src="clients/js/jarallax.min.js"></script>
-        <script src="clients/js/jarallax-video.min.js"></script>
-        <script src="clients/js/jquery.magnific-popup.min.js"></script>
-        <script src="clients/js/jquery.nice-select.min.js"></script>
-        <script src="clients/js/wow.min.js"></script>
-        <script src="clients/js/default/active.js"></script>
+        <script src="{{asset('clients/js/jquery.min.js')}}"></script>
+        <script src="{{asset('clients/js/popper.min.js')}}"></script>
+        <script src="{{asset('clients/js/bootstrap.min.js')}}"></script>
+        <script src="{{asset('clients/js/jquery.easing.min.js')}}"></script>
+        <script src="{{asset('clients/js/default/classy-nav.min.js')}}"></script>
+        <script src="{{asset('clients/js/owl.carousel.min.js')}}"></script>
+        <script src="{{asset('clients/js/default/scrollup.js')}}"></script>
+        <script src="{{asset('clients/js/waypoints.min.js')}}"></script>
+        <script src="{{asset('clients/js/jquery.countdown.min.js')}}"></script>
+        <script src="{{asset('clients/js/jquery.counterup.min.js')}}"></script>
+        <script src="{{asset('clients/js/jquery-ui.min.js')}}"></script>
+        <script src="{{asset('clients/js/jarallax.min.js')}}"></script>
+        <script src="{{asset('clients/js/jarallax-video.min.js')}}"></script>
+        <script src="{{asset('clients/js/jquery.magnific-popup.min.js')}}"></script>
+        <script src="{{asset('clients/js/jquery.nice-select.min.js')}}"></script>
+        <script src="{{asset('clients/js/wow.min.js')}}"></script>
+        <script src="{{asset('clients/js/default/active.js')}}"></script>
 
     </body>
 </html>

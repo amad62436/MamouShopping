@@ -25,4 +25,17 @@ class ClientController extends Controller
     public function cart(){
         return view('clients.cart');
     }
+
+    public function register(){
+        return view('clients.register');
+    }
+
+    public function login(){
+        return view('clients.login');
+    }
+
+    
+    public function contact(){
+        return view('clients.contact');
+    }
 }

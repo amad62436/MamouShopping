@@ -1,5 +1,9 @@
 @extends('clients.layout')
 
+@section('title')
+    Mon panier
+@endsection
+
 @section('content')
     
     <!-- Breadcumb Area -->
