@@ -1,187 +1,144 @@
 @extends('clients.layout')
 
 @section('title')
-    Mon panier
+    Panier
 @endsection
 
 @section('content')
-    
-    <!-- Breadcumb Area -->
-    <div class="breadcumb_area">
-        <div class="container h-100">
-            <div class="row h-100 align-items-center">
-                <div class="col-12">
-                    <h5>Cart</h5>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item active">Cart</li>
-                    </ol>
+
+    <!-- Hero Area -->
+    <div class="demo-hero-area bg-gray text-center ">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-sm-10 col-md-9">
+                    <h2 class="mb-4">Votre <strong>Panier</strong></h2>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Breadcumb Area -->
 
     <!-- Cart Area -->
-    <div class="cart_area section_padding_100_70 clearfix">
+    <section class="cart-area section_padding_50">
         <div class="container">
-            <div class="row justify-content-between">
+            <div class="row">
                 <div class="col-12">
-                    <div class="cart-table">
-                        <div class="table-responsive">
-                            <table class="table table-bordered mb-30">
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    @if(empty($cart))
+                        <div class="text-center">
+                            <p>Votre panier est vide.</p>
+                            <a href="{{ url('/') }}" class="btn btn-primary">Ajouter des produits</a>
+                        </div>
+                    @else
+                        <div class="cart-table">
+                            <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col"><i class="icofont-ui-delete"></i></th>
-                                        <th scope="col">Image</th>
-                                        <th scope="col">Product</th>
-                                        <th scope="col">Unit Price</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col">Total</th>
+                                        <th>Produit</th>
+                                        <th>Prix</th>
+                                        <th>Quantité</th>
+                                        <th>Total</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach($cart as $item)
                                     <tr>
-                                        <th scope="row">
-                                            <i class="icofont-close"></i>
-                                        </th>
                                         <td>
-                                            <img src="clients/img/product-img/onsale-1.png" alt="Product">
-                                        </td>
-                                        <td>
-                                            <a href="#">Bluetooth Speaker</a>
-                                        </td>
-                                        <td>$9</td>
-                                        <td>
-                                            <div class="quantity">
-                                                <input type="number" class="qty-text" id="qty2" step="1" min="1" max="99" name="quantity" value="1">
+                                            <div class="cart-item-desc">
+                                                <a href="#" class="image">
+                                                    <img src="{{ asset('storage/' . $item['front_image']) }}" class="cart-thumb" alt="{{ $item['name'] }}">
+                                                </a>
+                                                <div>
+                                                    <a href="#">{{ $item['name'] }}</a>
+                                                    <p class="text-muted small">Stock disponible: {{ $item['max_quantity'] }}</p>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td>$9</td>
+                                        <td>{{ number_format($item['price'], 0, ',', ' ') }} FG</td>
+                                        <td>
+                                            <form action="{{ route('cart.update', $item['id']) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="number" name="quantity" value="{{ $item['quantity'] }}" 
+                                                       min="1" max="{{ $item['max_quantity'] }}" 
+                                                       onchange="this.form.submit()" style="width: 60px;">
+                                            </form>
+                                        </td>
+                                        <td>{{ number_format($item['price'] * $item['quantity'], 0, ',', ' ') }} FG</td>
+                                        <td>
+                                            <form action="{{ route('cart.remove', $item['id']) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="icofont-bin"></i>
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row">
-                                            <i class="icofont-close"></i>
-                                        </th>
-                                        <td>
-                                            <img src="clients/img/product-img/onsale-2.png" alt="Product">
-                                        </td>
-                                        <td>
-                                            <a href="#">Roof Lamp</a>
-                                        </td>
-                                        <td>$11</td>
-                                        <td>
-                                            <div class="quantity">
-                                                <input type="number" class="qty-text" id="qty3" step="1" min="1" max="99" name="quantity" value="1">
-                                            </div>
-                                        </td>
-                                        <td>$11</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">
-                                            <i class="icofont-close"></i>
-                                        </th>
-                                        <td>
-                                            <img src="clients/img/product-img/onsale-6.png" alt="Product">
-                                        </td>
-                                        <td>
-                                            <a href="#">Cotton T-shirt</a>
-                                        </td>
-                                        <td>$6</td>
-                                        <td>
-                                            <div class="quantity">
-                                                <input type="number" class="qty-text" id="qty4" step="1" min="1" max="99" name="quantity" value="1">
-                                            </div>
-                                        </td>
-                                        <td>$6</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">
-                                            <i class="icofont-close"></i>
-                                        </th>
-                                        <td>
-                                            <img src="clients/img/product-img/onsale-4.png" alt="Product">
-                                        </td>
-                                        <td>
-                                            <a href="#">Water Bottle</a>
-                                        </td>
-                                        <td>$17</td>
-                                        <td>
-                                            <div class="quantity">
-                                                <input type="number" class="qty-text" id="qty5" step="1" min="1" max="99" name="quantity" value="1">
-                                            </div>
-                                        </td>
-                                        <td>$17</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">
-                                            <i class="icofont-close"></i>
-                                        </th>
-                                        <td>
-                                            <img src="clients/img/product-img/onsale-5.png" alt="Product">
-                                        </td>
-                                        <td>
-                                            <a href="#">Alka Sliper</a>
-                                        </td>
-                                        <td>$13</td>
-                                        <td>
-                                            <div class="quantity">
-                                                <input type="number" class="qty-text" id="qty6" step="1" min="1" max="99" name="quantity" value="1">
-                                            </div>
-                                        </td>
-                                        <td>$13</td>
-                                    </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                </div>
 
-                <div class="col-12 col-lg-6">
-                    <div class="cart-apply-coupon mb-30">
-                        <h6>Have a Coupon?</h6>
-                        <p>Enter your coupon code here &amp; get awesome discounts!</p>
-                        <!-- Form -->
-                        <div class="coupon-form">
-                            <form action="#">
-                                <input type="text" class="form-control" placeholder="Enter Your Coupon Code">
-                                <button type="submit" class="btn btn-primary">Apply Coupon</button>
-                            </form>
+                        <div class="cart-total-area mt-5">
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="cart-pricing">
+                                        <h5>Total du panier</h5>
+                                        <ul>
+                                            <li>
+                                                <span>Sous-total:</span>
+                                                <span>{{ number_format($total, 0, ',', ' ') }} FG</span>
+                                            </li>
+                                            <li>
+                                                <span>Livraison:</span>
+                                                <span>Gratuite</span>
+                                            </li>
+                                            <li class="total">
+                                                <span>Total:</span>
+                                                <span>{{ number_format($total, 0, ',', ' ') }} FG</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="row g-2">
+                                        <div class="col-4">
+                                            <a href="{{ url('/') }}" class="btn btn-primary w-100">Ajouter</a>
+                                        </div>
+                                        <div class="col-4">
+                                            @auth
+                                                <a href="{{ route('orders.checkout') }}" class="btn btn-success w-100">Commander</a>
+                                            @else
+                                                <a href="{{ route('login') }}" class="btn btn-warning w-100">Se connecter</a>
+                                            @endauth
+                                        </div>
+                                        <div class="col-4">
+                                            <form action="{{ route('cart.clear') }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger w-100">Vider</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-lg-5">
-                    <div class="cart-total-area mb-30">
-                        <h5 class="mb-3">Cart Totals</h5>
-                        <div class="table-responsive">
-                            <table class="table mb-3">
-                                <tbody>
-                                    <tr>
-                                        <td>Sub Total</td>
-                                        <td>$56.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Shipping</td>
-                                        <td>$10.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>VAT (10%)</td>
-                                        <td>$5.60</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Total</td>
-                                        <td>$71.60</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <a href="checkout-1.html" class="btn btn-primary d-block">Proceed To Checkout</a>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Cart Area End -->
+    </section>
 
-@endsection  
+@endsection

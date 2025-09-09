@@ -21,10 +21,10 @@ class AdminController extends Controller
 
     // Afficher la liste des catégories
     public function categories_list(){
-
         $categories = Category::all();
         return view('admin.categories_list', compact('categories'));
     }
+
 
     //Gestions des Produits
 
@@ -35,11 +35,9 @@ class AdminController extends Controller
     }
 
     // Afficher la liste des produits
-    public function produits_list(){
-        $categories = Category::all();
-        $produits = Product::all();
-        return view('admin.produits_list', compact('produits', 'categories'));
+    public function produits_list()
+    {
+        $products = Product::with('category')->get();
+        return view('admin.produits_list', compact('products'));
     }
-
-
 }

@@ -18,11 +18,41 @@
 @import url(css/magnific-popup.css);
 @import url(css/font-awesome.min.css);
 @import url(css/default/icofont.min.css);
+
 /* Preloader CSS */
 .nav-item.active .nav-link {
   color: #007bff; /* Couleur du lien actif */
   font-weight: bold; /* Texte en gras pour le lien actif */
 }
+
+/* debut */
+/* Badges de stock */
+.product-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    z-index: 10;
+}
+
+.product-badge.out-of-stock {
+    background-color: #dc3545; /* Rouge */
+}
+
+.product-badge.low-stock {
+    background-color: #ffc107; /* Jaune */
+    color: #000;
+}
+
+/* Pour positionner les badges */
+.product_image, .product-img, .product-main-image {
+    position: relative;
+}
+/* Fin */
 
 #preloader {
   position: fixed;
@@ -62,6 +92,24 @@ h5,
 h6 {
   color: #070a57;
   font-family: "Muli", sans-serif; }
+
+.product_add_to_cart {
+    color: #007bff;
+    font-size: 14px;
+}
+
+.product_add_to_cart:hover {
+    color: #0056b3;
+}
+
+.product_quick_view a {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.product_quick_view a:hover {
+    color: #495057;
+}
 
 p {
   color: #747794;

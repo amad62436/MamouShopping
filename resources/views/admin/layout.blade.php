@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="{{asset('admin/plugins/summernote/summernote-bs4.min.css')}}">
         {{-- tables --}}
         <link rel="stylesheet" href="{{asset('admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
-        <link rel="stylesheet" href="a{{asset('dmin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
+        <link rel="stylesheet" href="{{asset('admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
     </head>
     <body class="hold-transition sidebar-mini layout-fixed">
         <div class="wrapper">
@@ -45,7 +45,7 @@
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="{{url('/admin-home')}}" class="nav-link">Home</a>
+                <a href="{{ route('admin.dashboard') }}" class="nav-link">Accueil</a>
             </li>
             </ul>
 
@@ -59,7 +59,7 @@
                 <div class="navbar-search-block">
                 <form class="form-inline">
                     <div class="input-group input-group-sm">
-                    <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                    <input class="form-control form-control-navbar" type="search" placeholder="Rechercher..." aria-label="Search">
                     <div class="input-group-append">
                         <button class="btn btn-navbar" type="submit">
                         <i class="fas fa-search"></i>
@@ -72,33 +72,26 @@
                 </form>
                 </div>
             </li>
+            
             <!-- Notifications Dropdown Menu -->
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
                 <i class="far fa-bell"></i>
-                <span class="badge badge-warning navbar-badge">15</span>
+                <span class="badge badge-warning navbar-badge" id="pending-orders-count">0</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <span class="dropdown-item dropdown-header">15 Notifications</span>
+                <span class="dropdown-item dropdown-header" id="notifications-count">0 Notifications</span>
                 <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-envelope mr-2"></i> 4 new messages
-                    <span class="float-right text-muted text-sm">3 mins</span>
-                </a>
+                <div id="notifications-list">
+                    <a href="{{ route('admin.orders.pending') }}" class="dropdown-item">
+                        <i class="fas fa-shopping-cart mr-2"></i> <span id="pending-orders-text">0 commandes en attente</span>
+                    </a>
+                </div>
                 <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-users mr-2"></i> 8 friend requests
-                    <span class="float-right text-muted text-sm">12 hours</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-file mr-2"></i> 3 new reports
-                    <span class="float-right text-muted text-sm">2 days</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                <a href="{{ route('admin.orders.pending') }}" class="dropdown-item dropdown-footer">Voir toutes les commandes</a>
                 </div>
             </li>
+            
             <li class="nav-item">
                 <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                 <i class="fas fa-expand-arrows-alt"></i>
@@ -111,9 +104,9 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="{{url('/admin-home')}}" class="brand-link">
+            <a href="{{ route('admin.dashboard') }}" class="brand-link">
             <img src="{{asset('admin/dist/img/AdminLTELogo.png')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-            <span class="brand-text font-weight-light">AdminLTE 3</span>
+            <span class="brand-text font-weight-light">MamouShopping Admin</span>
             </a>
 
             <!-- Sidebar -->
@@ -124,17 +117,16 @@
                 <img src="{{asset('admin/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
-                <a href="#" class="d-block">Amadou Mouctar Diallo</a>
+                <a href="#" class="d-block">Administrateur</a>
                 </div>
             </div>
 
             <!-- Sidebar Menu -->
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                    <!-- Add icons to the links using the .nav-icon class
-                        with font-awesome or any other icon font library -->
-                    <li class="nav-item {{request()->is('admin-home') ? 'menu-open' : ''}}">
-                        <a href="#" class="nav-link {{request()->is('admin-home') ? 'active' : ''}}">
+                    <!-- Dashboard -->
+                    <li class="nav-item {{ request()->is('admin/dashboard') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
@@ -143,40 +135,18 @@
                         </a>
                         <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{url('/admin-home')}}" class="nav-link {{request()->is('admin-home') ? 'active' : ''}}">
+                            <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>Dashboard v1</p>
-                            </a>
-                        </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item {{request()->is('admin/addavis') || request()->is('admin/avis_list') ? 'menu-open' : ''}}">
-                        <a href="#" class="nav-link {{request()->is('admin/addavis') || request()->is('admin/avis_list') ? 'active' : ''}}">
-                        <i class="nav-icon fas fa-copy"></i>
-                        <p>
-                            Avis
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{url('/admin/addproduct')}}" class="nav-link {{request()->is('admin/addavis') ? 'active' : ''}}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Ajouter un avis</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{url('/admin/produits_list')}}" class="nav-link {{request()->is('admin/avis-list') ? 'active' : ''}}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Liste des avis</p>
+                            <p>Tableau de bord</p>
                             </a>
                         </li>
                         </ul>
                     </li>
                     
-                    <li class="nav-item {{request()->is('admin/addproduct') || request()->is('admin/produits_list') ? 'menu-open' : ''}}">
-                        <a href="#" class="nav-link {{request()->is('admin/addproduct') || request()->is('admin/produits_list') ? 'active' : ''}}">
-                        <i class="nav-icon fas fa-copy"></i>
+                    <!-- Produits -->
+                    <li class="nav-item {{ request()->is('admin/products*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-box"></i>
                         <p>
                             Produits
                             <i class="fas fa-angle-left right"></i>
@@ -184,45 +154,24 @@
                         </a>
                         <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{url('/admin/addproduct')}}" class="nav-link {{request()->is('admin/addproduct') ? 'active' : ''}}">
+                            <a href="{{ route('admin.addproduct') }}" class="nav-link {{ request()->is('admin/addproduct') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Ajouter un produit</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{url('/admin/produits_list')}}" class="nav-link {{request()->is('admin/produits-list') ? 'active' : ''}}">
+                            <a href="{{ route('admin.products.list') }}" class="nav-link {{ request()->is('admin/products') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Liste des produits</p>
                             </a>
                         </li>
                         </ul>
                     </li>
-                    <li class="nav-item {{request()->is('admin/addtype') || request()->is('admin/types_list') ? 'menu-open' : ''}}">
-                        <a href="#" class="nav-link {{request()->is('admin/addtype') || request()->is('admin/types_list') ? 'active' : ''}}">
-                        <i class="nav-icon fas fa-edit"></i>
-                        <p>
-                            Types
-                            <i class="fas fa-angle-left right"></i>
-                        </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{url('/admin/addtype')}}" class="nav-link {{request()->is('admin/addtype') ? 'active' : ''}}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Ajouter un type</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{url('/admin/types_list')}}" class="nav-link {{request()->is('admin/types_list') ? 'active' : ''}}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Liste des types</p>
-                            </a>
-                        </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item {{request()->is('admin/addcategory') || request()->is('admin/categories_list') ? 'menu-open' : ''}}">
-                        <a href="#" class="nav-link {{request()->is('admin/addcategory') || request()->is('admin/categories_list') ? 'active' : ''}}">
-                        <i class="nav-icon fas fa-edit"></i>
+
+                    <!-- Catégories -->
+                    <li class="nav-item {{ request()->is('admin/categories*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-tags"></i>
                         <p>
                             Catégories
                             <i class="fas fa-angle-left right"></i>
@@ -230,51 +179,101 @@
                         </a>
                         <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{url('/admin/addcategory')}}" class="nav-link {{request()->is('admin/addcategory') ? 'active' : ''}}">
+                            <a href="{{ route('admin.addcategory') }}" class="nav-link {{ request()->is('admin/addcategory') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Ajouter une catégorie</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{url('/admin/categories_list')}}" class="nav-link {{request()->is('admin/categories_list') ? 'active' : ''}}">
+                            <a href="{{ route('admin.categories.list') }}" class="nav-link {{ request()->is('admin/categories') ? 'active' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Liste des catégories</p>
                             </a>
                         </li>
                         </ul>
                     </li>
-                    <li class="nav-item {{request()->is('admin/addcommande') || request()->is('admin/commandes_list') ? 'menu-open' : ''}}">
-                        <a href="#" class="nav-link {{request()->is('admin/addcommande') || request()->is('admin/commandes_list') ? 'active' : ''}}">
-                        <i class="nav-icon fas fa-edit"></i>
+
+                    <!-- Commandes -->
+                    <li class="nav-item {{ request()->is('admin/orders*') ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ request()->is('admin/orders*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
                         <p>
                             Commandes
+                            <i class="fas fa-angle-left right"></i>
+                            <span class="badge badge-warning right" id="sidebar-pending-count">0</span>
+                        </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.orders.pending') }}" class="nav-link {{ request()->is('admin/orders/pending') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Commandes en attente</p>
+                            <span class="badge badge-warning right" id="pending-count">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.orders.index') }}" class="nav-link {{ request()->is('admin/orders') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Toutes les commandes</p>
+                            </a>
+                        </li>
+                        </ul>
+                    </li>
+
+                    <!-- Sections à venir -->
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-star"></i>
+                        <p>
+                            Avis
+                            <i class="fas fa-angle-left right"></i>
+                            <span class="badge badge-info right">Bientôt</span>
+                        </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Liste des avis</p>
+                            </a>
+                        </li>
+                        </ul>
+                    </li>
+
+                    <!-- Sections à venir -->
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                        <i class="fas fa-user"></i>
+                        <p>
+                            Utilisateurs
                             <i class="fas fa-angle-left right"></i>
                         </p>
                         </a>
                         <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{url('/admin/addcommande')}}" class="nav-link {{request()->is('admin/addcommande') ? 'active' : ''}}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Ajouter une commande</p>
+                            <a href="#" class="nav-link">
+                            <i class="fas fa-user"></i>
+                            <p>Ajouter un utilisateur</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{url('/admin/commandes_list')}}" class="nav-link {{request()->is('admin/commandes_list') ? 'active' : ''}}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Liste des commandes</p>
+                            <a href="#" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <p>Liste des utilisateurs</p>
                             </a>
                         </li>
                         </ul>
                     </li>
-                    
+
                     <li class="nav-item">
-                        <a href="{{url('/admin/profile')}}" class="nav-link {{request()->is('profile') ? 'active' : ''}}">
-                        <i class="nav-icon fas fa-table"></i>
+                        <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-chart-pie"></i>
                         <p>
-                            Profile
+                            Statistiques
+                            <span class="badge badge-info right">Bientôt</span>
                         </p>
                         </a>
-                    </li>>
+                    </li>
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->
@@ -290,10 +289,9 @@
 
         <!-- /.content-wrapper -->
         <footer class="main-footer">
-            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
-            All rights reserved.
+            <strong>Copyright &copy; 2023 MamouShopping. Tous droits réservés.</strong>
             <div class="float-right d-none d-sm-inline-block">
-            <b>Version</b> 3.1.0
+            <b>Version</b> 1.0.0
             </div>
         </footer>
 
@@ -340,18 +338,23 @@
         <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
         <script src="{{asset('admin/dist/js/pages/dashboard.js')}}"></script>
 
-        {{--  script des table  --}}
-
+        {{-- Scripts des tables --}}
         <script src="{{asset('admin/plugins/datatables/jquery.dataTables.min.js')}}"></script>
         <script src="{{asset('admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>
         <script src="{{asset('admin/plugins/datatables-responsive/js/dataTables.responsive.min.js')}}"></script>
         <script src="{{asset('admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
+        
         <script>
             $(function(){
+                // Initialisation des DataTables
                 $("#example1").DataTable({
                     "responsive" : true,
                     "autoWidth" : false,
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
+                    }
                 });
+                
                 $("#example2").DataTable({
                     "searching" : false,
                     "info" : true,
@@ -360,8 +363,33 @@
                     "lengthChange" : false,
                     "responsive" : true,
                     "autoWidth" : false,
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
+                    }
                 });
-            })
+
+                // Fonction pour mettre à jour le compteur de commandes en attente
+                function updatePendingOrdersCount() {
+                    $.ajax({
+                        url: '{{ route("admin.orders.pending.count") }}',
+                        type: 'GET',
+                        success: function(response) {
+                            $('#pending-orders-count').text(response.count);
+                            $('#sidebar-pending-count').text(response.count);
+                            $('#pending-count').text(response.count);
+                            $('#notifications-count').text(response.count + ' Notification' + (response.count !== 1 ? 's' : ''));
+                            $('#pending-orders-text').text(response.count + ' commande' + (response.count !== 1 ? 's' : '') + ' en attente');
+                        },
+                        error: function() {
+                            console.log('Erreur lors de la récupération du compteur de commandes');
+                        }
+                    });
+                }
+
+                // Mettre à jour initialement et toutes les 30 secondes
+                updatePendingOrdersCount();
+                setInterval(updatePendingOrdersCount, 30000);
+            });
         </script>
     </body>
 </html>

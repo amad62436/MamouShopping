@@ -14,6 +14,7 @@ class Order extends Model
         'total_amount',
         'status',
         'shipping_address',
+        'payment_number',
         'payment_status',
         'invoice_generated',
     ];
@@ -26,5 +27,10 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
     }
 }
