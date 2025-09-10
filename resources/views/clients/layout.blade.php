@@ -198,7 +198,7 @@
                                             <img src="{{ asset('clients/img/bg-img/user.jpg') }}" alt="Utilisateur">
                                         </div>
                                         <ul class="user-meta-dropdown">
-                                            <li class="user-title"><span>Hello,</span> {{ Auth::user()->name }}</li>
+                                            <li class="user-title"><span>Salut,</span> {{ Auth::user()->name }}</li>
                                             <li><a href="{{ route('client.account') }}">Mon Compte</a></li>
                                             <li><a href="{{ route('orders.history') }}">Mes Commandes</a></li>
                                             
@@ -222,7 +222,7 @@
                                             <img src="{{ asset('clients/img/bg-img/user.jpg') }}" alt="Utilisateur">
                                         </div>
                                         <ul class="user-meta-dropdown">
-                                            <li class="user-title"><span>Hello,</span> Visiteur</li>
+                                            <li class="user-title"><span>Salut,</span> Visiteur</li>
                                             <li><a href="{{ route('login') }}">Se connecter</a></li>
                                             <li><a href="{{ route('register') }}">Créer un compte</a></li>
                                         </ul>
@@ -261,7 +261,7 @@
                         </div>
                         <div class="feature_content">
                             <h6>Livraison Gratuite</h6>
-                            <p>Dans toute la ville de Mamou</p>
+                            <p>Dans toute la ville de Mamou de <b>08h00 - 18h00</b></p>
                         </div>
                     </div>
                 </div>
@@ -274,7 +274,7 @@
                         </div>
                         <div class="feature_content">
                             <h6>Garantie Produit</h6>
-                            <p>48h après livraison</p>
+                            <p><b>48h</b> après livraison</p>
                         </div>
                     </div>
                 </div>

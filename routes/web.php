@@ -33,15 +33,11 @@ Route::name('client.')->group(function () {
     Route::get('/login', [ClientController::class, 'login'])->name('login');
     Route::get('/contact', [ClientController::class, 'contact'])->name('contact');
     Route::get('/wishlist', [ClientController::class, 'wishlist'])->name('wishlist');
-    Route::get('/account', [ClientController::class, 'account'])->name('account');
+    Route::get('/account', [ClientController::class, 'account'])->name('account'); // ← ICI
     
     // Routes dynamiques
-    Route::get('/categorie/{id}', [ClientController::class, 'categoryProducts'])->name('category.products');
-    Route::get('/produit/{id}', [ClientController::class, 'productDetail'])->name('product.detail');
-
-    // Routes pour les produits par catégorie
+    Route::get('/categorie/{id}', [ClientController::class, 'categoryProducts'])->name('category.products.byid');
     Route::get('/categorie/{category:slug}', [ClientController::class, 'categoryProducts'])->name('category.products');
-
     Route::get('/produit/{id}', [ClientController::class, 'productDetail'])->name('product.detail');
     Route::get('/recherche', [ClientController::class, 'search'])->name('search');
 });
@@ -69,9 +65,9 @@ Route::prefix('orders')->name('orders.')->middleware('auth')->group(function () 
     Route::get('/{id}', [OrderController::class, 'show'])->name('show');
 });
 
-// Routes pour le profil utilisateur (protégées par auth)
+// Routes pour le profil utilisateur (protégées par auth) - SUPPRIMEZ LA ROUTE EN DOUBLE
 Route::middleware('auth')->group(function () {
-    Route::get('/mon-compte', [ClientController::class, 'account'])->name('client.account');
+    // SUPPRIMEZ cette ligne : Route::get('/mon-compte', [ClientController::class, 'account'])->name('client.account');
     Route::get('/mon-compte/edit', [ClientController::class, 'editAccount'])->name('client.account.edit');
     Route::put('/mon-compte/update', [ClientController::class, 'updateAccount'])->name('client.account.update');
     Route::get('/mon-compte/change-password', [ClientController::class, 'showChangePasswordForm'])->name('client.password.edit');

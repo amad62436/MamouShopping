@@ -104,8 +104,9 @@
                         <div class="payment-info mt-4 p-3 bg-light rounded">
                             <h6>💡 Après confirmation :</h6>
                             <p class="mb-1">1. Vous serez redirigé vers les instructions de paiement.</p>
-                            <p class="mb-1">2. Effectuez le paiement via Orange Money avec <b>les frais de retrait</b>.</p>
+                            <p class="mb-1">2. Effectuez le paiement via Orange Money ou Mobile Money avec <b>les frais de retrait</b>.</p>
                             <p class="mb-0">3. Attendez la validation par l'administrateur.</p>
+                            <p class="mb-0">4. <strong>NB:</strong> <b>Attention,</b> la livraison n'est gratuite que dans la ville de Mamou. Si vous commandez hors de la ville dans ce cas les frais de livraison vous reviendront.</p>
                         </div>
                     </div>
                 </div>

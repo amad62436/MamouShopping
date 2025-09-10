@@ -55,11 +55,6 @@
                         <p><strong>Email:</strong> {{ $user->email }}</p>
                         <p><strong>Téléphone:</strong> {{ $user->phone ?? 'Non renseigné' }}</p>
                         <p><strong>Adresse:</strong> {{ $user->address ?? 'Non renseignée' }}</p>
-                        <p><strong>Rôle:</strong> 
-                            <span class="badge {{ $user->role === 'admin' ? 'badge-danger' : 'badge-primary' }}">
-                                {{ $user->role === 'admin' ? 'Administrateur' : 'Client' }}
-                            </span>
-                        </p>
 
                         <div class="mt-4">
                             <a href="{{ route('client.account.edit') }}" class="btn btn-primary me-2">
