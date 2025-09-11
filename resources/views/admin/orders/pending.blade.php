@@ -79,7 +79,7 @@
                                     <div class="col-6">
                                         <strong><i class="fas fa-money-bill-wave mr-1"></i> Total:</strong> 
                                         {{ number_format($orderItem->total_amount, 0, ',', ' ') }} FG<br>
-                                        <strong><i class="fas fa-phone mr-1"></i> Paiement:</strong> 
+                                        <strong><i class="fas fa-phone mr-1"></i>Numéro de paiement:</strong> 
                                         {{ $orderItem->payment_number }}
                                     </div>
                                 </div>

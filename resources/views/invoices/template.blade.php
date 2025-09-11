@@ -28,7 +28,7 @@
 
     <div class="company-info">
         <p><strong>Téléphone:</strong> +224 621 30 47 08</p>
-        <p><strong>Email:</strong> contact@mamoushopping.com</p>
+        <p><strong>Email:</strong>mamoushopping@gmail.com</p>
         <p><strong>Adresse:</strong> Mamou, République de Guinée</p>
     </div>
 
@@ -37,7 +37,8 @@
         <p><strong>Date:</strong> {{ $invoice->issued_at->format('d/m/Y H:i') }}</p>
         <p><strong>Commande N°:</strong> #{{ $order->id }}</p>
         <p><strong>Client:</strong> {{ $order->user->name ?? 'Client invité' }}</p>
-        <p><strong>Téléphone du client:</strong> {{ $order->user->phone ?? $order->payment_number }}</p>
+        <p><strong>Télephone:</strong> {{ $order->user->phone ?? 'Non spécifié' }}</p>
+        <p><strong>Numéro de paiement:</strong> {{ $order->payment_number }}</p>
     </div>
 
     <table class="table">
@@ -80,7 +81,7 @@
     <div class="total-section text-right">
         <p><strong>Sous-total:</strong> {{ number_format($order->total_amount, 0, ',', ' ') }} FG</p>
         <p><strong>Livraison: Gratuite</strong></p>
-        <p><strong>Total TTC:</strong> {{ number_format($order->total_amount, 0, ',', ' ') }} FG</p>
+        <p><strong>Total TTC:</strong> <b>{{ number_format($order->total_amount, 0, ',', ' ') }} FG</b></p>
     </div>
 
     <div class="footer">

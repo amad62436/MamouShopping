@@ -55,7 +55,8 @@
                                         <div class="pl-3">
                                             <p><strong>Nom:</strong> {{ $order->user->name ?? 'Client invité' }}</p>
                                             <p><strong>Email:</strong> {{ $order->user->email ?? 'Non spécifié' }}</p>
-                                            <p><strong>Téléphone:</strong> {{ $order->payment_number }}</p>
+                                            <p><strong>Télephone:</strong> {{ $order->user->phone ?? 'Non spécifié' }}</p>
+                                            <p><strong>Numéro de paiement:</strong> {{ $order->payment_number }}</p>
                                             <p><strong>ID Client:</strong> {{ $order->user_id ?? 'Invité' }}</p>
                                         </div>
                                     </div>
