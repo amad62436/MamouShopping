@@ -12,6 +12,7 @@
             <div class="row justify-content-center">
                 <div class="col-12 col-sm-10 col-md-9">
                     <h2 class="mb-4">Mes <strong>Commandes</strong></h2>
+                    <p class="text-muted">Vous ne voyez ici que vos propres commandes.</p>
                 </div>
             </div>
         </div>
@@ -89,7 +90,6 @@
                                             <i class="icofont-eye"></i> Détails
                                         </a>
                                         
-                                        {{-- BOUTONS FACTURE AMÉLIORÉS --}}
                                         @if($order->invoice_generated && $order->invoice)
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('invoices.show', $order->id) }}" class="btn btn-success btn-sm">
@@ -109,7 +109,6 @@
                         @endforeach
                     </div>
                     
-                    <!-- Pagination -->
                     <div class="d-flex justify-content-center">
                         {{ $orders->links() }}
                     </div>

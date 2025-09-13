@@ -56,14 +56,38 @@ Route::prefix('cart')->name('cart.')->group(function () {
     });
 });
 
-// Routes commandes (protégées par auth)
-Route::prefix('orders')->name('orders.')->middleware('auth')->group(function () {
-    Route::get('/checkout', [OrderController::class, 'create'])->name('checkout');
-    Route::post('/store', [OrderController::class, 'store'])->name('store');
-    Route::get('/confirmation/{id}', [OrderController::class, 'confirmation'])->name('confirmation');
-    Route::get('/history', [OrderController::class, 'index'])->name('history');
-    Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+// ==================== ROUTES ORDERS SÉCURISÉES ====================
+// Routes individuelles avec middleware EXPLICITE
+Route::get('/orders/checkout', [OrderController::class, 'create'])
+    ->name('orders.checkout')
+    ->middleware('auth');
+
+Route::post('/orders/store', [OrderController::class, 'store'])
+    ->name('orders.store')
+    ->middleware('auth');
+
+Route::get('/orders/confirmation/{id}', [OrderController::class, 'confirmation'])
+    ->name('orders.confirmation')
+    ->middleware('auth');
+
+Route::get('/orders/history', [OrderController::class, 'index'])
+    ->name('orders.history')
+    ->middleware('auth');
+
+Route::get('/orders/{id}', [OrderController::class, 'show'])
+    ->name('orders.show')
+    ->middleware('auth');
+
+// ==================== ROUTES ADMIN ORDERS ====================
+Route::prefix('admin/orders')->name('admin.orders.')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/', [AdminOrderController::class, 'index'])->name('index');
+    Route::get('/pending', [AdminOrderController::class, 'pending'])->name('pending');
+    Route::get('/pending/count', [AdminOrderController::class, 'pendingCount'])->name('pending.count');
+    Route::post('/approve/{id}', [AdminOrderController::class, 'approve'])->name('approve');
+    Route::post('/reject/{id}', [AdminOrderController::class, 'reject'])->name('reject');
+    Route::get('/{id}', [AdminOrderController::class, 'show'])->name('show');
 });
+
 
 // Routes pour le profil utilisateur (protégées par auth) - SUPPRIMEZ LA ROUTE EN DOUBLE
 Route::middleware('auth')->group(function () {
@@ -72,19 +96,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/mon-compte/update', [ClientController::class, 'updateAccount'])->name('client.account.update');
     Route::get('/mon-compte/change-password', [ClientController::class, 'showChangePasswordForm'])->name('client.password.edit');
     Route::post('/mon-compte/change-password', [ClientController::class, 'updatePassword'])->name('client.password.update');
-});
-
-// Routes admin pour les commandes
-Route::prefix('admin')->name('admin.')->middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(function () {
-    Route::prefix('orders')->name('orders.')->group(function () {
-        Route::get('/pending', [AdminOrderController::class, 'pending'])->name('pending');
-        Route::get('/', [AdminOrderController::class, 'index'])->name('index');
-        Route::post('/approve/{id}', [AdminOrderController::class, 'approve'])->name('approve');
-        Route::post('/reject/{id}', [AdminOrderController::class, 'reject'])->name('reject');
-        // Route pour le compteur
-        Route::get('/pending/count', [AdminOrderController::class, 'pendingCount'])->name('pending.count');
-        Route::get('/{id}', [AdminOrderController::class, 'show'])->name('show');
-    });
 });
 
 // Routes pour les factures

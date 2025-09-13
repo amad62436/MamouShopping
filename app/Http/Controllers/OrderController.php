@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Session;
 
 class OrderController extends Controller
 {
-    // Afficher le formulaire de commande
+    // SUPPRIMEZ le constructeur, on utilise le middleware dans les routes
+    
     public function create()
     {
         $cart = Session::get('cart', []);
@@ -20,18 +21,16 @@ class OrderController extends Controller
             return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
         }
 
-        // Vérifier le stock avant de commander
         foreach ($cart as $item) {
             $product = Product::find($item['id']);
             if (!$product || $product->quantity < $item['quantity']) {
-                return redirect()->route('cart.index')->with('error', 'Stock insuffisant pour ' . $item['name'] . '. Stock disponible: ' . ($product->quantity ?? 0));
+                return redirect()->route('cart.index')->with('error', 'Stock insuffisant pour ' . $item['name']);
             }
         }
 
         return view('clients.checkout', compact('cart'));
     }
 
-    // Traiter la commande (diminuer la quantité immédiatement)
     public function store(Request $request)
     {
         $cart = Session::get('cart', []);
@@ -40,45 +39,34 @@ class OrderController extends Controller
             return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
         }
 
-        // Validation
         $request->validate([
             'shipping_address' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'payment_number' => 'required|string|max:20',
         ]);
 
-        // Vérification finale des stocks avant de créer la commande
+        // Vérification stock
         foreach ($cart as $item) {
             $product = Product::find($item['id']);
-            
-            if (!$product) {
-                return redirect()->route('cart.index')->with('error', 'Produit non trouvé: ' . $item['name']);
-            }
-            
-            if ($product->quantity < $item['quantity']) {
-                return redirect()->route('cart.index')->with('error', 'Stock insuffisant pour ' . $item['name'] . '. Stock disponible: ' . $product->quantity);
+            if (!$product || $product->quantity < $item['quantity']) {
+                return redirect()->route('cart.index')->with('error', 'Stock insuffisant pour ' . $item['name']);
             }
         }
 
         try {
-            // Calculer le total
-            $total = 0;
-            foreach ($cart as $item) {
-                $total += $item['price'] * $item['quantity'];
-            }
-
-            // Créer la commande avec statut "pending"
+            // Création commande
+            $total = array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $cart));
+            
             $order = Order::create([
-                'user_id' => Auth::id() ?? 1,
+                'user_id' => Auth::id(),
                 'total_amount' => $total,
                 'status' => 'pending',
                 'shipping_address' => $request->shipping_address,
                 'payment_number' => $request->payment_number,
                 'payment_status' => 'pending',
-                'invoice_generated' => false,
             ]);
 
-            // Créer les articles de la commande et mettre à jour les stocks (DIMINUTION IMMÉDIATE)
+            // Création items et mise à jour stock
             foreach ($cart as $item) {
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -87,47 +75,37 @@ class OrderController extends Controller
                     'price' => $item['price'],
                 ]);
 
-                // Mettre à jour le stock du produit (DIMINUTION IMMÉDIATE)
                 $product = Product::find($item['id']);
-                $product->quantity -= $item['quantity'];
-                $product->save();
-
-                // Vérifier et désactiver si stock = 0
-                $product->updateStatusBasedOnStock();
+                $product->decrement('quantity', $item['quantity']);
             }
 
-            // Vider le panier
             Session::forget('cart');
-
-            return redirect()->route('orders.confirmation', $order->id)
-                           ->with('success', 'Commande passée avec succès! En attente de validation du paiement.');
+            return redirect()->route('orders.confirmation', $order->id);
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Erreur: ' . $e->getMessage());
         }
     }
 
-    // Page de confirmation
     public function confirmation($id)
     {
-        $order = Order::with('items.product')->findOrFail($id);
+        $order = Order::where('user_id', Auth::id())->with('items.product')->findOrFail($id);
         return view('clients.order_confirmation', compact('order'));
     }
 
-    // Historique des commandes
     public function index()
     {
-        $orders = Order::with(['items.product', 'invoice'])
+        $orders = Order::where('user_id', Auth::id())
+                  ->with(['items.product', 'invoice'])
                   ->orderBy('created_at', 'desc')
                   ->paginate(10);
 
         return view('clients.orders', compact('orders'));
     }
 
-    // Détails d'une commande
     public function show($id)
     {
-        $order = Order::with('items.product')->findOrFail($id);
+        $order = Order::where('user_id', Auth::id())->with('items.product')->findOrFail($id);
         return view('clients.order_details', compact('order'));
     }
 }

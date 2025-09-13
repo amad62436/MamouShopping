@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Order extends Model
 {
@@ -19,6 +20,12 @@ class Order extends Model
         'invoice_generated',
     ];
 
+    // Scope pour récupérer seulement les commandes de l'utilisateur
+    public function scopeForUser($query, $userId = null)
+    {
+        return $query->where('user_id', $userId ?? Auth::id());
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -32,5 +39,11 @@ class Order extends Model
     public function invoice()
     {
         return $this->hasOne(Invoice::class);
+    }
+
+    // Vérifier si l'utilisateur est propriétaire
+    public function isOwnedBy($userId)
+    {
+        return $this->user_id == $userId;
     }
 }
