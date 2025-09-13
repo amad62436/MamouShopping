@@ -28,7 +28,7 @@
                 <div class="list-group">
                     <a href="{{ route('client.account') }}" class="list-group-item list-group-item-action active">Mon Profil</a>
                     <a href="{{ route('orders.history') }}" class="list-group-item list-group-item-action">Mes Commandes</a>
-                    <a href="{{ route('client.wishlist') }}" class="list-group-item list-group-item-action">Wishlist</a>
+                    <a href="{{ route('client.wishlist') }}" class="list-group-item list-group-item-action">Favoris</a>
                     <a href="{{ route('client.account.edit') }}" class="list-group-item list-group-item-action">Modifier mon profil</a>
                     <a href="{{ route('client.password.edit') }}" class="list-group-item list-group-item-action">Changer mon mot de passe</a>
                     

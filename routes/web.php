@@ -56,30 +56,17 @@ Route::prefix('cart')->name('cart.')->group(function () {
     });
 });
 
-// ==================== ROUTES ORDERS SÉCURISÉES ====================
-// Routes individuelles avec middleware EXPLICITE
-Route::get('/orders/checkout', [OrderController::class, 'create'])
-    ->name('orders.checkout')
-    ->middleware('auth');
+// Routes commandes avec middleware PERSONNALISÉ
+Route::prefix('orders')->name('orders.')->middleware(['auth'])->group(function () {
+    Route::get('/checkout', [OrderController::class, 'create'])->name('checkout');
+    Route::post('/store', [OrderController::class, 'store'])->name('store');
+    Route::get('/confirmation/{id}', [OrderController::class, 'confirmation'])->name('confirmation');
+    Route::get('/history', [OrderController::class, 'index'])->name('history');
+    Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+});
 
-Route::post('/orders/store', [OrderController::class, 'store'])
-    ->name('orders.store')
-    ->middleware('auth');
-
-Route::get('/orders/confirmation/{id}', [OrderController::class, 'confirmation'])
-    ->name('orders.confirmation')
-    ->middleware('auth');
-
-Route::get('/orders/history', [OrderController::class, 'index'])
-    ->name('orders.history')
-    ->middleware('auth');
-
-Route::get('/orders/{id}', [OrderController::class, 'show'])
-    ->name('orders.show')
-    ->middleware('auth');
-
-// ==================== ROUTES ADMIN ORDERS ====================
-Route::prefix('admin/orders')->name('admin.orders.')->middleware(['auth', 'admin'])->group(function () {
+// Routes ADMIN pour les commandes (PROTÉGÉES par auth et admin)
+Route::prefix('admin/orders')->name('admin.orders.')->middleware(['auth'])->group(function () {
     Route::get('/', [AdminOrderController::class, 'index'])->name('index');
     Route::get('/pending', [AdminOrderController::class, 'pending'])->name('pending');
     Route::get('/pending/count', [AdminOrderController::class, 'pendingCount'])->name('pending.count');
