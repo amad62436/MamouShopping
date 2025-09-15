@@ -72,15 +72,5 @@ class AppServiceProvider extends ServiceProvider
             
             $view->with('stats', $stats);
         });
-
-        // ================= OPTIMISATIONS AJOUTÉES =================
-        if ($this->app->environment('production')) {
-            \Illuminate\Database\Eloquent\Builder::macro('optimized', function () {
-                return $this->select(array_merge(
-                    ['id'], 
-                    $this->model->getFillable() ?? []
-                ));
-            });
-        }
     }
 }
