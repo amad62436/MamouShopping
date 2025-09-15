@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
-    // Afficher le panier
     public function index()
     {
         $cart = Session::get('cart', []);
@@ -21,31 +20,29 @@ class CartController extends Controller
         return view('clients.cart', compact('cart', 'total'));
     }
 
-    // Ajouter un produit au panier
     public function add(Request $request, $id)
     {
         $request->validate([
             'quantity' => 'required|integer|min:1'
         ]);
 
+        // Optimisation: Select spécifique
         $product = Product::where('id', $id)
-                    ->where('is_active', 1) // ← Produit doit être actif
-                    ->where('quantity', '>', 0) // ← Et avoir du stock
+                    ->where('is_active', 1)
+                    ->where('quantity', '>', 0)
+                    ->select('id', 'name', 'price', 'front_image', 'quantity')
                     ->firstOrFail();
         
         $cart = Session::get('cart', []);
         $quantity = $request->quantity;
         
-        // Vérifier si la quantité demandée est disponible
         if ($quantity > $product->quantity) {
             return redirect()->back()->with('error', 'Quantité non disponible. Stock restant: ' . $product->quantity);
         }
 
-        // Vérifier si le produit est déjà dans le panier
         if (isset($cart[$id])) {
             $newQuantity = $cart[$id]['quantity'] + $quantity;
             
-            // Vérifier que le total ne dépasse pas le stock
             if ($newQuantity > $product->quantity) {
                 return redirect()->back()->with('error', 'Vous ne pouvez pas ajouter plus que le stock disponible. Stock restant: ' . ($product->quantity - $cart[$id]['quantity']));
             }
@@ -58,7 +55,7 @@ class CartController extends Controller
                 'price' => $product->price,
                 'quantity' => $quantity,
                 'front_image' => $product->front_image,
-                'max_quantity' => $product->quantity // Stock maximum disponible
+                'max_quantity' => $product->quantity
             ];
         }
 
@@ -67,7 +64,6 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Produit ajouté au panier !');
     }
 
-    // Mettre à jour la quantité
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -78,7 +74,6 @@ class CartController extends Controller
         $newQuantity = $request->quantity;
         
         if (isset($cart[$id])) {
-            // Vérifier que la nouvelle quantité ne dépasse pas le stock
             if ($newQuantity > $cart[$id]['max_quantity']) {
                 return redirect()->back()->with('error', 'Quantité non disponible. Stock maximum: ' . $cart[$id]['max_quantity']);
             }
@@ -90,7 +85,6 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Panier mis à jour !');
     }
 
-    // Supprimer un produit du panier
     public function remove($id)
     {
         $cart = Session::get('cart', []);
@@ -103,7 +97,6 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Produit retiré du panier !');
     }
 
-    // Vider le panier
     public function clear()
     {
         Session::forget('cart');

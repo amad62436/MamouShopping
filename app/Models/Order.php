@@ -20,10 +20,21 @@ class Order extends Model
         'invoice_generated',
     ];
 
-    // Scope pour récupérer seulement les commandes de l'utilisateur
+
+    // SCOPES OPTIMISÉS
     public function scopeForUser($query, $userId = null)
     {
         return $query->where('user_id', $userId ?? Auth::id());
+    }
+
+    public function scopeWithBasicInfo($query)
+    {
+        return $query->select('id', 'user_id', 'total_amount', 'status', 'payment_status', 'created_at');
+    }
+
+    public function scopeWithFullInfo($query)
+    {
+        return $query->select('id', 'user_id', 'total_amount', 'status', 'shipping_address', 'payment_number', 'payment_status', 'created_at');
     }
 
     public function user()
@@ -45,5 +56,10 @@ class Order extends Model
     public function isOwnedBy($userId)
     {
         return $this->user_id == $userId;
+    }
+
+    public function scopeOptimized($query)
+    {
+        return $query->select(array_merge(['id'], $this->fillable));
     }
 }

@@ -56,11 +56,16 @@
                                     <tr>
                                         <td>
                                             <div class="cart-item-desc">
-                                                <a href="#" class="image">
-                                                    <img src="{{ asset('storage/' . $item['front_image']) }}" class="cart-thumb" alt="{{ $item['name'] }}">
+                                                <a href="{{ route('client.product.detail', $item['id']) }}" class="image">
+                                                    <img src="{{ asset('storage/' . $item['front_image']) }}" 
+                                                         class="cart-thumb" 
+                                                         alt="{{ $item['name'] }}"
+                                                         loading="lazy"
+                                                         width="60"
+                                                         height="60">
                                                 </a>
                                                 <div>
-                                                    <a href="#">{{ $item['name'] }}</a>
+                                                    <a href="{{ route('client.product.detail', $item['id']) }}">{{ $item['name'] }}</a>
                                                     <p class="text-muted small">Stock disponible: {{ $item['max_quantity'] }}</p>
                                                 </div>
                                             </div>

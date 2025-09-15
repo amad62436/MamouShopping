@@ -97,6 +97,7 @@
                                                          alt="{{ $item->product->name }}"
                                                          width="60" 
                                                          class="mr-3 rounded"
+                                                         loading="lazy"
                                                          onerror="this.src='{{ asset('clients/img/product-img/default-product.png') }}'">
                                                     <div>
                                                         <strong>{{ $item->product->name }}</strong><br>

@@ -19,6 +19,15 @@ class Category extends Model
         'image',
     ]; 
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', 1);
+    }
+
+    public function scopeWithBasicInfo($query)
+    {
+        return $query->select('id', 'name', 'slug', 'image');
+    }
      protected static function booted()
     {
         static::creating(function ($category) {
@@ -41,5 +50,10 @@ class Category extends Model
      public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function scopeOptimized($query)
+    {
+        return $query->select(array_merge(['id'], $this->fillable));
     }
 }

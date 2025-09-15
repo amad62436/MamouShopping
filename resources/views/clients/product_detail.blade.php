@@ -31,6 +31,7 @@
                     <img src="{{ asset('storage/' . $product->front_image) }}" 
                          class="img-fluid rounded" 
                          alt="{{ $product->name }}"
+                         loading="lazy"
                          style="max-height: 250px; width: 100%; object-fit: cover;">
                 </div>
 
@@ -40,6 +41,7 @@
                         <img src="{{ asset('storage/' . $product->back_image) }}" 
                              class="img-fluid rounded" 
                              alt="Arrière de {{ $product->name }}"
+                             loading="lazy"
                              style="max-height: 250px; width: 100%; object-fit: cover;">
                     </div>
                 @endif

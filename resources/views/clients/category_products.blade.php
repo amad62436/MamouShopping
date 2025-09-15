@@ -35,7 +35,11 @@
                     <div class="single-product-area mb-30">
                         <div class="product_image">
                             <!-- Product Image -->
-                            <img class="normal_img" src="{{ asset('storage/' . $product->front_image) }}" alt="{{ $product->name }}">
+                            <img class="normal_img" src="{{ asset('storage/' . $product->front_image) }}" 
+                                 alt="{{ $product->name }}"
+                                 loading="lazy"
+                                 width="300"
+                                 height="300">
 
                             <!-- Product Badge -->
                             <div class="product_badge">
@@ -92,8 +96,18 @@
                                         <div class="row">
                                             <div class="col-12 col-lg-5">
                                                 <div class="quickview_pro_img">
-                                                    <img class="first_img" src="{{ $product->back_image ? asset('storage/' . $product->back_image) : asset('storage/' . $product->front_image) }}" alt="{{ $product->name }}">
-                                                    <img class="hover_img" src="{{ asset('storage/' . $product->front_image) }}" alt="{{ $product->name }}">
+                                                    <img class="first_img" 
+                                                         src="{{ $product->back_image ? asset('storage/' . $product->back_image) : asset('storage/' . $product->front_image) }}" 
+                                                         alt="{{ $product->name }}"
+                                                         loading="lazy"
+                                                         width="400"
+                                                         height="400">
+                                                    <img class="hover_img" 
+                                                         src="{{ asset('storage/' . $product->front_image) }}" 
+                                                         alt="{{ $product->name }}"
+                                                         loading="lazy"
+                                                         width="400"
+                                                         height="400">
                                                     <!-- Product Badge -->
                                                     <div class="product_badge">
                                                         <span class="badge-new">Nouveau!</span>

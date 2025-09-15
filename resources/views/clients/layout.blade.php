@@ -38,7 +38,7 @@
                         <nav class="classy-navbar" id="bigshopNav">
 
                             <!-- Nav Brand -->
-                            <a href="{{ url('/') }}" class="nav-brand"><img src="{{ asset('clients/img/core-img/logo.png') }}" alt="logo"></a>
+                            <a href="{{ url('/') }}" class="nav-brand"><img src="{{ asset('clients/img/core-img/logo.png') }}" alt="logo" loading="lazy" width="120" height="40"></a>
 
                             <!-- Toggler -->
                             <div class="classy-navbar-toggler">
@@ -110,15 +110,16 @@
                                 <!-- Cart -->
                                 <div class="cart-area">
                                     @php
-                                        use Illuminate\Support\Facades\Auth;
                                         use Illuminate\Support\Facades\Session;
+                                        use Illuminate\Support\Str;
+                                        use Illuminate\Support\Facades\Auth;
                                         $cart = Session::get('cart', []);
                                         $cartCount = array_sum(array_column($cart, 'quantity'));
                                         $subTotal = 0;
                                         foreach ($cart as $item) {
                                             $subTotal += $item['price'] * $item['quantity'];
                                         }
-                                        $shipping = 0; // Livraison gratuite
+                                        $shipping = 0;
                                         $total = $subTotal + $shipping;
                                     @endphp
 
@@ -139,7 +140,7 @@
                                                     <li>
                                                         <div class="cart-item-desc">
                                                             <a href="{{ route('client.product.detail', $item['id']) }}" class="image">
-                                                                <img src="{{ asset('storage/' . $item['front_image']) }}" class="cart-thumb" alt="{{ $item['name'] }}">
+                                                                <img src="{{ asset('storage/' . $item['front_image']) }}" class="cart-thumb" alt="{{ $item['name'] }}" loading="lazy" width="60" height="60">
                                                             </a>
                                                             <div>
                                                                 <a href="{{ route('client.product.detail', $item['id']) }}">{{ $item['name'] }}</a>
@@ -195,7 +196,7 @@
                                     @auth
                                         <!-- Utilisateur connecté -->
                                         <div class="user-thumbnail">
-                                            <img src="{{ asset('clients/img/bg-img/user.jpg') }}" alt="Utilisateur">
+                                            <img src="{{ asset('clients/img/bg-img/user.jpg') }}" alt="Utilisateur" loading="lazy" width="40" height="40">
                                         </div>
                                         <ul class="user-meta-dropdown">
                                             <li class="user-title"><span>Salut,</span> {{ Auth::user()->name }}</li>
@@ -219,7 +220,7 @@
                                     @else
                                         <!-- Utilisateur non connecté -->
                                         <div class="user-thumbnail">
-                                            <img src="{{ asset('clients/img/bg-img/user.jpg') }}" alt="Utilisateur">
+                                            <img src="{{ asset('clients/img/bg-img/user.jpg') }}" alt="Utilisateur" loading="lazy" width="40" height="40">
                                         </div>
                                         <ul class="user-meta-dropdown">
                                             <li class="user-title"><span>Salut,</span> Visiteur</li>

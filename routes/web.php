@@ -11,35 +11,47 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Cache;
 
 /*
 |--------------------------------------------------------------------------
-| Routes Client (Frontend)
+| Routes Client (Frontend) - AVEC CACHE HTTP
 |--------------------------------------------------------------------------
 */
 
+// Groupe avec cache HTTP pour les pages statiques
+Route::middleware('cache.headers:public;max_age=300;etag')->group(function () {
+    
+    Route::name('client.')->group(function () {
+        // Page d'accueil avec cache
+        Route::get('/', [ClientController::class, 'home'])->name('home');
+        
+        // Boutiques avec cache
+        Route::get('/shop1', [ClientController::class, 'shop1'])->name('shop1');
+        Route::get('/shop2', [ClientController::class, 'shop2'])->name('shop2');
+        Route::get('/shop3', [ClientController::class, 'shop3'])->name('shop3');
+        
+        // Pages statiques avec cache
+        Route::get('/contact', [ClientController::class, 'contact'])->name('contact');
+        
+        // Routes dynamiques avec cache
+        Route::get('/categorie/{category:slug}', [ClientController::class, 'categoryProducts'])->name('category.products');
+        Route::get('/produit/{id}', [ClientController::class, 'productDetail'])->name('product.detail');
+    });
+});
+
+// Routes sans cache (contenu dynamique)
 Route::name('client.')->group(function () {
-    // Page d'accueil
-    Route::get('/', [ClientController::class, 'home'])->name('home');
-    
-    // Boutiques
-    Route::get('/shop1', [ClientController::class, 'shop1'])->name('shop1');
-    Route::get('/shop2', [ClientController::class, 'shop2'])->name('shop2');
-    Route::get('/shop3', [ClientController::class, 'shop3'])->name('shop3');
-    
-    // Pages statiques
     Route::get('/cart', [ClientController::class, 'cart'])->name('cart');
     Route::get('/register', [ClientController::class, 'register'])->name('register');
     Route::get('/login', [ClientController::class, 'login'])->name('login');
-    Route::get('/contact', [ClientController::class, 'contact'])->name('contact');
     Route::get('/wishlist', [ClientController::class, 'wishlist'])->name('wishlist');
-    Route::get('/account', [ClientController::class, 'account'])->name('account'); // ← ICI
+    Route::get('/account', [ClientController::class, 'account'])->name('account');
     
-    // Routes dynamiques
-    Route::get('/categorie/{id}', [ClientController::class, 'categoryProducts'])->name('category.products.byid');
-    Route::get('/categorie/{category:slug}', [ClientController::class, 'categoryProducts'])->name('category.products');
-    Route::get('/produit/{id}', [ClientController::class, 'productDetail'])->name('product.detail');
-    Route::get('/recherche', [ClientController::class, 'search'])->name('search');
+    // Recherche avec cache court
+    Route::get('/recherche', [ClientController::class, 'search'])
+         ->name('search')
+         ->middleware('cache.headers:public;max_age=120;etag');
 });
 
 // Routes panier
@@ -75,10 +87,8 @@ Route::prefix('admin/orders')->name('admin.orders.')->middleware(['auth'])->grou
     Route::get('/{id}', [AdminOrderController::class, 'show'])->name('show');
 });
 
-
-// Routes pour le profil utilisateur (protégées par auth) - SUPPRIMEZ LA ROUTE EN DOUBLE
+// Routes pour le profil utilisateur (protégées par auth)
 Route::middleware('auth')->group(function () {
-    // SUPPRIMEZ cette ligne : Route::get('/mon-compte', [ClientController::class, 'account'])->name('client.account');
     Route::get('/mon-compte/edit', [ClientController::class, 'editAccount'])->name('client.account.edit');
     Route::put('/mon-compte/update', [ClientController::class, 'updateAccount'])->name('client.account.update');
     Route::get('/mon-compte/change-password', [ClientController::class, 'showChangePasswordForm'])->name('client.password.edit');
@@ -101,7 +111,7 @@ Route::post('/auth/register', [RegisterController::class, 'register']);
 
 /*
 |--------------------------------------------------------------------------
-| Routes Admin (Backend) - Préfixe 'admin'
+| Routes Admin (Backend) - Préfixe 'admin' (SANS CACHE)
 |--------------------------------------------------------------------------
 */
 

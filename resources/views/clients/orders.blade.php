@@ -66,7 +66,7 @@
                                         <h6>Produits commandés</h6>
                                         <ul class="list-unstyled mb-0">
                                             @foreach($order->items as $item)
-                                            <li>• {{ $item->product->name }} x{{ $item->quantity }}</li>
+                                                <li>• {{ $item->product->name ?? 'Produit supprimé' }} x{{ $item->quantity }}</li>
                                             @endforeach
                                         </ul>
                                     </div>
@@ -109,9 +109,11 @@
                         @endforeach
                     </div>
                     
-                    <div class="d-flex justify-content-center">
-                        {{ $orders->links() }}
+                    @if($orders->hasPages())
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ $orders->onEachSide(1)->links() }}
                     </div>
+                    @endif
                     @endif
                     
                 </div>

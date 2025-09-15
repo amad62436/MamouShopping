@@ -87,9 +87,12 @@
                         </div>
 
                         <div class="summary-total mt-3 pt-3 border-top">
+                            @php
+                                $subTotal = array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $cart));
+                            @endphp
                             <div class="d-flex justify-content-between">
                                 <strong>Sous-total:</strong>
-                                <strong>{{ number_format(array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $cart)), 0, ',', ' ') }} FG</strong>
+                                <strong>{{ number_format($subTotal, 0, ',', ' ') }} FG</strong>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <strong>Livraison:</strong>
@@ -97,7 +100,7 @@
                             </div>
                             <div class="d-flex justify-content-between mt-2">
                                 <strong>Total:</strong>
-                                <strong>{{ number_format(array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $cart)), 0, ',', ' ') }} FG</strong>
+                                <strong>{{ number_format($subTotal, 0, ',', ' ') }} FG</strong>
                             </div>
                         </div>
 

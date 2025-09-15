@@ -8,23 +8,27 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryController extends Controller
 {
-    // Afficher la liste des catégories
+    // Afficher la liste des catégories - OPTIMISÉ
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::select('id', 'name', 'image', 'is_active', 'created_at')
+                            ->orderBy('name')
+                            ->get();
+
         return view('admin.categories_list', compact('categories'));
     }
 
-    // Afficher le formulaire de création
+    // Afficher le formulaire de création - OPTIMISÉ
     public function create()
     {
         return view('admin.addcategory');
     }
 
-    // Enregistrer une nouvelle catégorie
+    // Enregistrer une nouvelle catégorie - OPTIMISÉ
     public function savecategory(Request $request)
     {
         $request->validate([
@@ -53,6 +57,10 @@ class CategoryController extends Controller
 
             $category->save();
 
+            // Clear cache après modification
+            Cache::forget('home_categories');
+            Cache::forget('active_categories');
+
             return redirect()->route('admin.categories.list')->with('success', 'Catégorie créée avec succès.');
 
         } catch (\Exception $e) {
@@ -60,14 +68,14 @@ class CategoryController extends Controller
         }
     }
 
-    // Afficher le formulaire d'édition
+    // Afficher le formulaire d'édition - OPTIMISÉ
     public function editcategory($id)
     {
-        $category = Category::findOrFail($id);
+        $category = Category::select('id', 'name', 'image')->findOrFail($id);
         return view('admin.editcategory', compact('category'));
     }
 
-    // Mettre à jour une catégorie
+    // Mettre à jour une catégorie - OPTIMISÉ
     public function updatecategory(Request $request, $id)
     {
         $category = Category::findOrFail($id);
@@ -98,6 +106,10 @@ class CategoryController extends Controller
 
             $category->save();
 
+            // Clear cache après modification
+            Cache::forget('home_categories');
+            Cache::forget('active_categories');
+
             return redirect()->route('admin.categories.list')->with('success', 'Catégorie mise à jour avec succès.');
 
         } catch (\Exception $e) {
@@ -105,11 +117,11 @@ class CategoryController extends Controller
         }
     }
 
-    // Supprimer une catégorie
+    // Supprimer une catégorie - OPTIMISÉ
     public function deletecategory($id)
     {
         try {
-            $category = Category::findOrFail($id);
+            $category = Category::select('id', 'image')->findOrFail($id);
             
             // Supprimer l'image associée
             if ($category->image) {
@@ -118,6 +130,10 @@ class CategoryController extends Controller
             
             $category->delete();
             
+            // Clear cache après suppression
+            Cache::forget('home_categories');
+            Cache::forget('active_categories');
+            
             return back()->with('success', 'Catégorie supprimée avec succès.');
             
         } catch (\Exception $e) {
@@ -125,13 +141,17 @@ class CategoryController extends Controller
         }
     }
 
-    // Activer/Désactiver une catégorie
+    // Activer/Désactiver une catégorie - OPTIMISÉ
     public function toggleCategory($id)
     {
         try {
-            $category = Category::findOrFail($id);
+            $category = Category::select('id', 'is_active')->findOrFail($id);
             $category->is_active = !$category->is_active;
             $category->save();
+
+            // Clear cache après modification
+            Cache::forget('home_categories');
+            Cache::forget('active_categories');
 
             $message = $category->is_active ? 'Catégorie activée avec succès' : 'Catégorie désactivée avec succès';
             
@@ -142,7 +162,7 @@ class CategoryController extends Controller
         }
     }
 
-    // MÉTHODE PRIVÉE D'OPTIMISATION D'IMAGE
+    // MÉTHODE PRIVÉE D'OPTIMISATION D'IMAGE - OPTIMISÉE
     private function optimizeAndStoreImage($image, $folder, $fileName)
     {
         $extension = 'webp';
@@ -158,7 +178,7 @@ class CategoryController extends Controller
             $img = $manager->read($image->getPathname());
             
             // Redimensionnement intelligent
-            $size = ($folder === 'products') ? 1200 : 800;
+            $size = ($folder === 'products') ? 800 : 600;
             
             $img->resize($size, $size, function ($constraint) {
                 $constraint->aspectRatio();

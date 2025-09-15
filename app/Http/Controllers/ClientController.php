@@ -10,17 +10,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
 
 class ClientController extends Controller
 {
-    //Affichage des catégories sur la page d'accueil
+    //Affichage des catégories sur la page d'accueil - OPTIMISÉ MAIS COMPLET
     public function home(){
-        $categories = Category::where('is_active', 1)->get(); // Récupérer les catégories actives
+        $categories = Cache::remember('home_categories', 3600, function () {
+            return Category::optimized()
+                         ->where('is_active', 1)
+                         ->select('id', 'name', 'slug', 'image')
+                         ->get();
+        });
         
-        $products = Product::where('is_active', 1)
+        $products = Cache::remember('home_products', 1800, function () {
+            return Product::optimized()
+                     ->where('is_active', 1)
                      ->where('quantity', '>', 0)
+                     ->select('id', 'name', 'price', 'front_image', 'slug', 'quantity') // AJOUT DE quantity
                      ->take(8)
                      ->get();
+        });
 
         return view('clients.home', compact('categories', 'products'));
     }
@@ -119,17 +129,17 @@ class ClientController extends Controller
         }
     }
 
-    //Affichage des produits par catégorie sur une page spécifique
+    //Affichage des produits par catégorie sur une page spécifique - CORRIGÉ
      public function categoryProducts($slug)
     {
-        // Trouver la catégorie par son slug
-        $category = Category::where('slug', $slug)->firstOrFail();
+        $category = Category::where('slug', $slug)
+                          ->select('id', 'name', 'slug')
+                          ->firstOrFail();
         
-        // Récupérer les produits actifs de cette catégorie
         $products = Product::where('category_id', $category->id)
                           ->where('is_active', 1)
-                          ->where('quantity', '>', 0) // ← OPTIONNEL (double sécurité)
-                          ->with('category')
+                          ->where('quantity', '>', 0)
+                          ->select('id', 'name', 'price', 'front_image', 'slug', 'description', 'quantity') // AJOUT DE quantity
                           ->get();
         
         return view('clients.category_products', compact('category', 'products'));
@@ -139,8 +149,8 @@ class ClientController extends Controller
     {
         $products = Product::where('type', ProductController::TYPE_NUMERIQUE)
                         ->where('is_active', 1)
-                        ->where('quantity', '>', 0) // ← OPTIONNEL (double sécurité)
-                        ->with('category')
+                        ->where('quantity', '>', 0)
+                        ->select('id', 'name', 'price', 'front_image', 'slug', 'description', 'quantity') // AJOUT DE quantity
                         ->get();
         
         return view('clients.shop1', compact('products'));
@@ -150,8 +160,8 @@ class ClientController extends Controller
     {
         $products = Product::where('type', ProductController::TYPE_COSMETIQUE)
                         ->where('is_active', 1)
-                        ->where('quantity', '>', 0) // ← OPTIONNEL (double sécurité)
-                        ->with('category')
+                        ->where('quantity', '>', 0)
+                        ->select('id', 'name', 'price', 'front_image', 'slug', 'description', 'quantity') // AJOUT DE quantity
                         ->get();
         
         return view('clients.shop2', compact('products'));
@@ -161,8 +171,8 @@ class ClientController extends Controller
     {
         $products = Product::where('type', ProductController::TYPE_AUTRE)
                         ->where('is_active', 1)
-                        ->where('quantity', '>', 0) // ← OPTIONNEL (double sécurité)
-                        ->with('category')
+                        ->where('quantity', '>', 0)
+                        ->select('id', 'name', 'price', 'front_image', 'slug', 'description', 'quantity') // AJOUT DE quantity
                         ->get();
         
         return view('clients.shop3', compact('products'));
@@ -187,7 +197,8 @@ class ClientController extends Controller
 
     public function productDetail($id)
     {
-        $product = Product::with('category')->findOrFail($id);
+        $product = Product::select('id', 'name', 'description', 'price', 'prix_barre', 'front_image', 'back_image', 'quantity', 'category_id')
+                        ->findOrFail($id);
         return view('clients.product_detail', compact('product'));
     }
 
@@ -197,7 +208,7 @@ class ClientController extends Controller
         $products = Product::where('name', 'like', "%$query%")
                           ->orWhere('description', 'like', "%$query%")
                           ->where('is_active', 1)
-                          ->with('category')
+                          ->select('id', 'name', 'price', 'front_image', 'slug', 'quantity') // AJOUT DE quantity
                           ->get();
         
         return view('clients.search_results', compact('products', 'query'));

@@ -16,6 +16,8 @@
         .footer { margin-top: 50px; font-size: 11px; text-align: center; }
         .product-image { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
         .logo { width: 120px; margin-bottom: 10px; }
+        /* Optimisation pour PDF */
+        .no-image { display: none; }
     </style>
 </head>
 <body>
@@ -57,11 +59,14 @@
                     <strong>{{ $item->product->name }}</strong>
                     <br>
                     <br>
-                    <!-- Image du produit -->
+                    <!-- Image du produit OPTIMISÉE -->
+                    @if(file_exists(storage_path('app/public/' . $item->product->front_image)))
                     <img src="{{ storage_path('app/public/' . $item->product->front_image) }}" 
                          class="product-image" 
                          alt="{{ $item->product->name }}"
-                         onerror="this.style.display='none'">
+                         width="50"
+                         height="50">
+                    @endif
                     {{-- Vidéo fb  --}}
                     @if($item->product->link)
                     <br><br>

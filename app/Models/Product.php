@@ -25,6 +25,27 @@ class Product extends Model
         'is_active'
     ];
 
+     // SCOPES OPTIMISÉS
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', 1);
+    }
+
+    public function scopeInStock($query)
+    {
+        return $query->where('quantity', '>', 0);
+    }
+
+    public function scopeWithMainInfo($query)
+    {
+        return $query->select('id', 'name', 'price', 'front_image', 'slug', 'quantity', 'category_id');
+    }
+
+    public function scopeWithFullInfo($query)
+    {
+        return $query->select('id', 'name', 'description', 'price', 'prix_barre', 'front_image', 'back_image', 'quantity', 'link', 'category_id');
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -107,5 +128,10 @@ class Product extends Model
                 Storage::disk('public')->delete($original['back_image']);
             }
         });
+    }
+
+    public function scopeOptimized($query)
+    {
+        return $query->select(array_merge(['id'], $this->fillable));
     }
 }

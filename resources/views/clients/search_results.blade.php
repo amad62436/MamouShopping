@@ -43,7 +43,10 @@
                                         <img src="{{ asset('storage/' . $product->front_image) }}" 
                                              class="card-img-top" 
                                              alt="{{ $product->name }}"
-                                             style="height: 200px">
+                                             loading="lazy"
+                                             width="300"
+                                             height="200"
+                                             style="height: 200px; object-fit: cover;">
 
                                         @if($product->quantity == 0)
                                             <div class="product-badge out-of-stock">
