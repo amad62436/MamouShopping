@@ -344,7 +344,7 @@
                             </ul>
                             <div class="footer_social_area mt-50">
                                 <h6 class="text-white">Nous suivre sur :</h6>
-                                <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                <a href="https://www.facebook.com/profile.php?id=61581077248843" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
                                 <a href="https://www.instagram.com/amadoumouctar10/" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a>
                                 <a href="https://www.tiktok.com/@amdprocedure" target="_blank"><i class="fa fa-tiktok" aria-hidden="true"></i></a>
                             </div>

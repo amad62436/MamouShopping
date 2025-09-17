@@ -11,11 +11,36 @@
         use Illuminate\Support\Str;
     @endphp
 
-    <div class="demo-hero-area bg-gray text-center section_padding_100">
+    <div class="demo-hero-area bg-gray text-center section_padding_50">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-sm-10 col-md-9">
-                    <h2 class="mb-4">Bienvenue sur notre site de vente MamouShopping.</h2>
+                    <h2 class="mb-4">Bienvenue chez <strong>MamouShopping</strong></h2>
+                    
+                    <p class="text-muted mb-3">
+                        Nous vous offrons des produits de haute qualité et de bonne qualité. 
+                        Votre boutique en ligne de confiance à Mamou. Découvrez un large choix de produits 
+                        soigneusement sélectionnés pour vous offrir la meilleure qualité au meilleur prix.
+                    </p>
+                    
+                    <div class="highlight-box p-3 mb-3 rounded" style="background-color: #f8f9fa; border-left: 4px solid #28a745;">
+                        <h5 class="text-success mb-2">🚚 Livraison Gratuite !</h5>
+                        <p class="mb-0">
+                            <strong>Livraison GRATUITE</strong> dans toute la ville de Mamou ! 
+                            <br>Livraison disponible partout en Guinée aux frais du client.
+                        </p>
+                    </div>
+                    
+                    <p class="mb-3">
+                        ✅ <strong>Paiement sécurisé</strong> Orange Money & Mobile Money<br>
+                        ✅ <strong>Support 7j/7</strong> de 8h à 22h<br>
+                        ✅ <strong>Garantie</strong> sur tous nos produits
+                    </p>
+                    
+                    <p class="text-muted mb-0">
+                        Avec <strong>MamouShopping</strong>, vos achats sont simples, rapides et sécurisés. 
+                        Faites-vous plaisir dès aujourd'hui, et profitez d'une expérience de shopping unique !
+                    </p>
                 </div>
             </div>
         </div>
@@ -66,7 +91,7 @@
             
                 <div class="row">
                     @foreach($products as $product)
-                        @if($product->quantity <= 5)
+                        @if($product->quantity <= 3)
                             <div class="col-6 col-md-3 mb-4">
                                 <div class="card product-card">
                                     <a href="{{ route('client.product.detail', $product->id) }}">

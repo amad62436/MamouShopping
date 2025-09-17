@@ -112,26 +112,6 @@
                             </form>
                         </div>
                     </div>
-
-                    <div class="col-md-4">
-                        <div class="card card-info">
-                            <div class="card-header">
-                                <h3 class="card-title">Informations</h3>
-                            </div>
-                            <div class="card-body">
-                                <p><strong>Statut :</strong> 
-                                    @if($category->is_active)
-                                        <span class="badge bg-success">Actif</span>
-                                    @else
-                                        <span class="badge bg-danger">Inactif</span>
-                                    @endif
-                                </p>
-                                <p><strong>Slug :</strong> {{ $category->slug }}</p>
-                                <p><strong>Créée le :</strong> {{ $category->created_at->format('d/m/Y H:i') }}</p>
-                                <p><strong>Modifiée le :</strong> {{ $category->updated_at->format('d/m/Y H:i') }}</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>

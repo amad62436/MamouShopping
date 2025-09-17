@@ -20,6 +20,7 @@ class ClientController extends Controller
             return Category::optimized()
                          ->where('is_active', 1)
                          ->select('id', 'name', 'slug', 'image')
+                         ->orderBy('name', 'asc')
                          ->get();
         });
         
@@ -27,8 +28,8 @@ class ClientController extends Controller
             return Product::optimized()
                      ->where('is_active', 1)
                      ->where('quantity', '>', 0)
-                     ->select('id', 'name', 'price', 'front_image', 'slug', 'quantity') // AJOUT DE quantity
-                     ->take(8)
+                     ->select('id', 'name', 'price', 'front_image', 'back_image', 'prix_barre', 'description',  'slug', 'quantity') // AJOUT DE quantity
+                     ->orderBy('name', 'asc')
                      ->get();
         });
 
@@ -134,12 +135,14 @@ class ClientController extends Controller
     {
         $category = Category::where('slug', $slug)
                           ->select('id', 'name', 'slug')
+                          ->orderBy('name', 'asc')
                           ->firstOrFail();
         
         $products = Product::where('category_id', $category->id)
                           ->where('is_active', 1)
                           ->where('quantity', '>', 0)
-                          ->select('id', 'name', 'price', 'front_image', 'slug', 'description', 'quantity') // AJOUT DE quantity
+                          ->select('id', 'name', 'price', 'front_image', 'back_image', 'prix_barre', 'slug', 'description', 'quantity') // AJOUT DE quantity
+                          ->orderBy('name', 'asc')
                           ->get();
         
         return view('clients.category_products', compact('category', 'products'));
@@ -150,7 +153,8 @@ class ClientController extends Controller
         $products = Product::where('type', ProductController::TYPE_NUMERIQUE)
                         ->where('is_active', 1)
                         ->where('quantity', '>', 0)
-                        ->select('id', 'name', 'price', 'front_image', 'slug', 'description', 'quantity') // AJOUT DE quantity
+                        ->select('id', 'name', 'price', 'front_image','back_image', 'prix_barre', 'slug', 'description', 'quantity') // AJOUT DE quantity
+                        ->orderBy('name', 'asc')
                         ->get();
         
         return view('clients.shop1', compact('products'));
@@ -161,7 +165,8 @@ class ClientController extends Controller
         $products = Product::where('type', ProductController::TYPE_COSMETIQUE)
                         ->where('is_active', 1)
                         ->where('quantity', '>', 0)
-                        ->select('id', 'name', 'price', 'front_image', 'slug', 'description', 'quantity') // AJOUT DE quantity
+                        ->select('id', 'name', 'price', 'front_image', 'back_image', 'prix_barre', 'slug', 'description', 'quantity') // AJOUT DE quantity
+                        ->orderBy('name', 'asc')
                         ->get();
         
         return view('clients.shop2', compact('products'));
@@ -172,7 +177,8 @@ class ClientController extends Controller
         $products = Product::where('type', ProductController::TYPE_AUTRE)
                         ->where('is_active', 1)
                         ->where('quantity', '>', 0)
-                        ->select('id', 'name', 'price', 'front_image', 'slug', 'description', 'quantity') // AJOUT DE quantity
+                        ->select('id', 'name', 'price', 'front_image', 'back_image', 'prix_barre', 'slug', 'description', 'quantity') // AJOUT DE quantity
+                        ->orderBy('name', 'asc')
                         ->get();
         
         return view('clients.shop3', compact('products'));
@@ -208,7 +214,7 @@ class ClientController extends Controller
         $products = Product::where('name', 'like', "%$query%")
                           ->orWhere('description', 'like', "%$query%")
                           ->where('is_active', 1)
-                          ->select('id', 'name', 'price', 'front_image', 'slug', 'quantity') // AJOUT DE quantity
+                          ->select('id', 'name', 'price', 'front_image', 'back_image', 'prix_barre', 'description', 'link', 'slug', 'quantity') // AJOUT DE quantity
                           ->get();
         
         return view('clients.search_results', compact('products', 'query'));

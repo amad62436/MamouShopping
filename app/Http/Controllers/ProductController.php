@@ -26,7 +26,9 @@ class ProductController extends Controller
     // Afficher le formulaire de création
     public function create()
     {
-        $categories = Category::where('is_active', 1)->get();
+        $categories = Category::where('is_active', 1)
+                                ->orderBy('name', 'asc')
+                                ->get();
         return view('admin.addproduct', compact('categories'));
     }
 
@@ -107,7 +109,9 @@ class ProductController extends Controller
     public function editproduct($id)
     {
         $product = Product::findOrFail($id);
-        $categories = Category::where('is_active', 1)->get();
+        $categories = Category::where('is_active', 1)
+                                ->orderBy('name', 'asc')
+                                ->get();
         return view('admin.editproduct', compact('product', 'categories'));
     }
 
