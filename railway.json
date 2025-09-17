@@ -4,6 +4,6 @@
         "buildFlags": "--add pkgs.php83Extensions.redis"
     },
     "deploy": {
-        "startCommand": "php artisan serve --port=$PORT --host=0.0.0.0"
+        "startCommand": "php artisan optimize:clear && php artisan serve --port=$PORT --host=0.0.0.0"
     }
 }
