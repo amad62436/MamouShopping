@@ -162,30 +162,6 @@ Route::get('/admin/produits_list', function () {
     return redirect()->route('admin.products.list');
 });
 
-
-
-/*
-|--------------------------------------------------------------------------
-| Route de test Redis
-|--------------------------------------------------------------------------
-*/
-Route::get('/test-redis', function() {
-    try {
-        Cache::store('redis')->put('test_key', 'Redis works!', 10);
-        $value = Cache::store('redis')->get('test_key');
-        return response()->json([
-            'redis' => $value ? 'OK' : 'Error',
-            'driver' => config('cache.default'),
-            'host' => config('database.redis.default.host')
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'fallback' => 'Using fallback'
-        ]);
-    }
-});
-
 /*
 |--------------------------------------------------------------------------
 | Route de fallback (404)
