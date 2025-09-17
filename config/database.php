@@ -50,7 +50,7 @@ return [
             'database' => env('DB_DATABASE', 'sql10798154'),
             'username' => env('DB_USERNAME', 'sql10798154'),
             'password' => env('DB_PASSWORD', 'ufkdzXzGWE'),
-            'unix_socket' => '',
+            'unix_socket' => env('DB_SOCKET', ''),
             'charset' => env('DB_CHARSET', 'utf8mb4'),
             'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix' => '',
