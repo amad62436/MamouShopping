@@ -52,7 +52,6 @@ class AppServiceProvider extends ServiceProvider
                             ->where('quantity', '>', 0)
                             ->select('id', 'name', 'price', 'front_image', 'slug', 'quantity')
                             ->orderBy('created_at', 'desc')
-                            ->take(8)
                             ->get();
             });
             
