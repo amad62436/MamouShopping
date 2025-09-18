@@ -1,16 +1,42 @@
 services:
   - type: web
-    name: mamoushopping
+    name: mamou-shopping
     env: php
     plan: free
-    buildCommand: "composer install --no-dev --optimize-autoloader && npm ci && npm run build"
-    startCommand: "php artisan migrate --force && apache2-foreground"
+    buildCommand: |
+      # 1. Préparer la configuration Apache
+      sudo cp apache-config.conf /etc/apache2/sites-available/mamou-shopping.conf
+      
+      # 2. Désactiver la config par défaut
+      sudo a2dissite 000-default
+      sudo a2ensite mamou-shopping
+      
+      # 3. Activer les modules
+      sudo a2enmod rewrite
+      sudo a2enmod headers
+      
+      # 4. Configurations Laravel
+      chmod -R 755 storage bootstrap/cache
+      composer install --no-dev --optimize-autoloader --no-interaction
+      php artisan key:generate --force
+      php artisan optimize:clear
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+      
+      # 5. Préparer le script
+      chmod +x force-correct-directory.sh
+      
+    startCommand: |
+      # Démarrer Apache avec la bonne config
+      sudo service apache2 restart
+      # Garder le service actif
+      tail -f /var/log/apache2/error.log
+      
     envVars:
       - key: APP_ENV
         value: production
-      - key: APP_KEY
-        value: base64:WaICOXcD4dlMJNNUW8mZG0zo60Rgk+I9AYtizj/kK7k=
       - key: APP_DEBUG
         value: false
-      - key: APP_URL
-        value: https://mamoushopping.onrender.com
+      - key: APP_KEY
+        value: base64:WaICOXcD4dlMJNNUW8mZG0zo60Rgk+I9AYtizj/kK7k=
