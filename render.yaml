@@ -1,14 +1,24 @@
 services:
   - type: web
-    name: mamoushopping
+    name: mamou-shopping
     env: php
     plan: free
-    buildCommand: "composer install --no-dev --optimize-autoloader && php artisan optimize:clear"
-    startCommand: "php artisan serve --host=0.0.0.0 --port=$PORT"
+    buildCommand: |
+      chmod -R 755 storage bootstrap/cache
+      composer install --no-dev --optimize-autoloader
+      php artisan optimize:clear
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+    startCommand: |
+      # Utilisez la configuration Nginx personnalisée
+      nginx -c /opt/render/project/src/nginx.conf
+      # OU utilisez PHP built-in server si Nginx ne fonctionne pas
+      # php artisan serve --port=$PORT --host=0.0.0.0
     envVars:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
         value: false
-      - key: LOG_CHANNEL
-        value: stderr
+      - key: PORT
+        value: 80
