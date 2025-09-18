@@ -4,18 +4,15 @@ services:
     env: php
     plan: free
     buildCommand: |
-      # 1. Préparer la configuration Apache
-      sudo cp apache-config.conf /etc/apache2/sites-available/mamou-shopping.conf
+      # 1. ARRÊTER ET DÉSACTIVER APACHE COMPLÈTEMENT
+      echo "🛑 Arrêt et suppression d'Apache..."
+      sudo systemctl stop apache2 || true
+      sudo systemctl disable apache2 || true
+      sudo apt-get remove --purge apache2 apache2-utils apache2-bin -y || true
+      sudo apt-get autoremove -y || true
       
-      # 2. Désactiver la config par défaut
-      sudo a2dissite 000-default
-      sudo a2ensite mamou-shopping
-      
-      # 3. Activer les modules
-      sudo a2enmod rewrite
-      sudo a2enmod headers
-      
-      # 4. Configurations Laravel
+      # 2. Configurations Laravel
+      echo "🚀 Configuration de Laravel..."
       chmod -R 755 storage bootstrap/cache
       composer install --no-dev --optimize-autoloader --no-interaction
       php artisan key:generate --force
@@ -24,19 +21,11 @@ services:
       php artisan route:cache
       php artisan view:cache
       
-      # 5. Préparer le script
-      chmod +x force-correct-directory.sh
-      
-    startCommand: |
-      # Démarrer Apache avec la bonne config
-      sudo service apache2 restart
-      # Garder le service actif
-      tail -f /var/log/apache2/error.log
-      
+    startCommand: php artisan serve --port=$PORT --host=0.0.0.0
     envVars:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
         value: false
-      - key: APP_KEY
-        value: base64:WaICOXcD4dlMJNNUW8mZG0zo60Rgk+I9AYtizj/kK7k=
+      - key: PORT
+        value: 10000
