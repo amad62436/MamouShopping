@@ -1,32 +1,10 @@
 <IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
     RewriteEngine On
-
-    # Redirection HTTP vers HTTPS si pas déjà forcé dans Laravel
-    RewriteCond %{HTTPS} off
-    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-    # Gestion Authorization et XSRF Headers
-    RewriteCond %{HTTP:Authorization} .
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-
-    RewriteCond %{HTTP:x-xsrf-token} .
-    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
-
-    # Redirection des URLs avec slash final vers sans slash
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
-
-    # Redirection vers index.php si le fichier ou dossier n'existe pas
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
-
-    # Optional : Prévention de navigation dans les dossiers
-    Options -Indexes
-</IfModule>
-
-<IfModule !mod_rewrite.c>
-    # Si mod_rewrite n'est pas activé
-    ErrorDocument 404 /index.php
 </IfModule>
