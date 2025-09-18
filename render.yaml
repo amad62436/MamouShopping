@@ -1,31 +1,23 @@
 services:
   - type: web
-    name: mamou-shopping
+    name: mamoushopping
     env: php
     plan: free
     buildCommand: |
-      # 1. ARRÊTER ET DÉSACTIVER APACHE COMPLÈTEMENT
-      echo "🛑 Arrêt et suppression d'Apache..."
-      sudo systemctl stop apache2 || true
-      sudo systemctl disable apache2 || true
-      sudo apt-get remove --purge apache2 apache2-utils apache2-bin -y || true
-      sudo apt-get autoremove -y || true
-      
-      # 2. Configurations Laravel
-      echo "🚀 Configuration de Laravel..."
-      chmod -R 755 storage bootstrap/cache
-      composer install --no-dev --optimize-autoloader --no-interaction
-      php artisan key:generate --force
-      php artisan optimize:clear
+      composer install --no-dev --optimize-autoloader
+      npm install && npm run build
       php artisan config:cache
       php artisan route:cache
       php artisan view:cache
-      
-    startCommand: php artisan serve --port=$PORT --host=0.0.0.0
+      php artisan migrate --force
+    startCommand: |
+      php artisan serve --host 0.0.0.0 --port 10000
     envVars:
       - key: APP_ENV
         value: production
+      - key: APP_KEY
+        value: base64:WaICOXcD4dlMJNNUW8mZG0zo60Rgk+I9AYtizj/kK7k=
       - key: APP_DEBUG
         value: false
-      - key: PORT
-        value: 10000
+      - key: APP_URL
+        value: https://mamoushopping.onrender.com

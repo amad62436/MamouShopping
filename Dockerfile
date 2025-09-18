@@ -1,44 +1,41 @@
+# Utiliser une image PHP avec Apache
 FROM php:8.2-apache
 
-# Mettre à jour et installer les dépendances
+# Installer les extensions PHP nécessaires à Laravel
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
     libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
+    git \
+    curl \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql gd
 
-# Installer Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Activer le rewrite Apache
+# Activer mod_rewrite pour Laravel
 RUN a2enmod rewrite
 
-# Copier les fichiers de l'application
+# Copier le code de ton projet
 COPY . /var/www/html
 
-# Configurer les permissions CRITIQUES
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
-
-# Aller dans le dossier de travail
+# Définir le répertoire de travail
 WORKDIR /var/www/html
 
-# Installer les dépendances Composer
-RUN composer install --no-dev --no-interaction --optimize-autoloader
+# Installer Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Créer le .env si absent et générer la clé
-RUN if [ ! -f .env ]; then \
-        cp .env.example .env; \
-    fi
+# Installer les dépendances Laravel
+RUN composer install --no-dev --optimize-autoloader
 
-# Exposer le port
-EXPOSE 80
+# Donner les permissions aux dossiers Laravel
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Commande de démarrage
-CMD ["sh", "-c", "php artisan optimize:clear && php artisan key:generate --force && apache2-foreground"]
+# Configurer Apache pour pointer sur /public
+RUN echo '<VirtualHost *:80> \
+    DocumentRoot /var/www/html/public \
+    <Directory /var/www/html/public> \
+        AllowOverride All \
+        Require all granted \
+    </Directory> \
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
