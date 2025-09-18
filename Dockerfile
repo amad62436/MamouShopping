@@ -26,9 +26,9 @@ COPY . /var/www/html
 COPY .docker/apache.conf /etc/apache2/sites-available/000-default.conf
 
 # ================= CORRECTIONS CRITIQUES =================
-# Configurer les permissions STOCKAGE et CACHE
+# Configurer les permissions STOCKAGE et CACHE (CORRIGÉ)
 RUN chown -R www-data:www-data /var/www/html/storage \
-    && chown -R www-data:www/html/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
@@ -45,10 +45,7 @@ RUN if [ ! -f .env ]; then \
     php artisan key:generate --force
 
 # Optimiser Laravel
-RUN php artisan optimize:clear \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+RUN php artisan optimize:clear
 
 # Exposer le port
 EXPOSE 80
