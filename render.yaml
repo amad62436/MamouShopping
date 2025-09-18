@@ -4,21 +4,21 @@ services:
     env: php
     plan: free
     buildCommand: |
+      # Copier la configuration Apache
+      sudo cp apache.conf /etc/apache2/sites-available/000-default.conf
+      # Activer mod_rewrite
+      sudo a2enmod rewrite
+      # Redémarrer Apache
+      sudo service apache2 restart
+      # Permissions Laravel
       chmod -R 755 storage bootstrap/cache
       composer install --no-dev --optimize-autoloader
       php artisan optimize:clear
-      php artisan config:cache
-      php artisan route:cache
-      php artisan view:cache
     startCommand: |
-      # Utilisez la configuration Nginx personnalisée
-      nginx -c /opt/render/project/src/nginx.conf
-      # OU utilisez PHP built-in server si Nginx ne fonctionne pas
-      # php artisan serve --port=$PORT --host=0.0.0.0
+      # Démarrer Apache en foreground
+      apache2ctl -D FOREGROUND
     envVars:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
         value: false
-      - key: PORT
-        value: 80
