@@ -171,14 +171,3 @@ Route::get('/admin/produits_list', function () {
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
-
-// TEST ROUTE - À supprimer après vérification
-Route::get('/test-server', function () {
-    return response()->json([
-        'status' => 'success',
-        'server' => 'PHP Built-in Server',
-        'port' => getenv('PORT'),
-        'document_root' => base_path(),
-        'time' => now()->toDateTimeString()
-    ]);
-});

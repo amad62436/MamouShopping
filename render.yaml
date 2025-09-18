@@ -4,9 +4,9 @@ services:
     env: php
     plan: free
     buildCommand: |
-      # Désactiver Apache s'il est actif
-      which apache2 && sudo service apache2 stop || true
-      which apache2 && sudo systemctl disable apache2 || true
+      # Désactiver Apache définitivement
+      sudo systemctl disable apache2 || true
+      sudo service apache2 stop || true
       
       # Configurations Laravel
       chmod -R 755 storage bootstrap/cache
@@ -15,7 +15,10 @@ services:
       php artisan config:cache
       php artisan route:cache
       php artisan view:cache
-    startCommand: php artisan serve --port=$PORT --host=0.0.0.0
+      
+      # Rendre le script executable
+      chmod +x start.sh
+    startCommand: ./start.sh
     envVars:
       - key: APP_ENV
         value: production
