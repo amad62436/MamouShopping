@@ -29,10 +29,6 @@ class AppServiceProvider extends ServiceProvider
 
         if (env('APP_ENV') === 'production') {
             URL::forceScheme('https');
-
-             // Middleware pour compression
-            $this->app->middleware->append(\Illuminate\Http\Middleware\TrustProxies::class);
-            $this->app->middleware->append(\Illuminate\Http\Middleware\SetCacheHeaders::class);
         }
 
         // ================= OPTIMISATIONS AJOUTÉES =================
