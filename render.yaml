@@ -4,21 +4,22 @@ services:
     env: php
     plan: free
     buildCommand: |
-      # Copier la configuration Apache
-      sudo cp apache.conf /etc/apache2/sites-available/000-default.conf
-      # Activer mod_rewrite
-      sudo a2enmod rewrite
-      # Redémarrer Apache
-      sudo service apache2 restart
-      # Permissions Laravel
+      # Désactiver Apache s'il est actif
+      which apache2 && sudo service apache2 stop || true
+      which apache2 && sudo systemctl disable apache2 || true
+      
+      # Configurations Laravel
       chmod -R 755 storage bootstrap/cache
-      composer install --no-dev --optimize-autoloader
+      composer install --no-dev --optimize-autoloader --no-interaction
       php artisan optimize:clear
-    startCommand: |
-      # Démarrer Apache en foreground
-      apache2ctl -D FOREGROUND
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+    startCommand: php artisan serve --port=$PORT --host=0.0.0.0
     envVars:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
         value: false
+      - key: PORT
+        value: 10000
