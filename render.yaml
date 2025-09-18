@@ -4,11 +4,19 @@ services:
     env: php
     plan: free
     buildCommand: |
-      # Désactiver Apache définitivement
-      sudo systemctl disable apache2 || true
-      sudo service apache2 stop || true
+      # 1. SUPPRIMER Apache complètement
+      echo "🛑 Suppression d'Apache..."
+      sudo apt-get remove --purge apache2 apache2-utils apache2-bin -y
+      sudo apt-get autoremove -y
+      sudo rm -rf /etc/apache2 /var/www/html
       
-      # Configurations Laravel
+      # 2. Libérer le port 80
+      echo "🔓 Libération du port 80..."
+      pkill -f apache2 || true
+      pkill -f httpd || true
+      
+      # 3. Configurations Laravel
+      echo "🚀 Configuration de Laravel..."
       chmod -R 755 storage bootstrap/cache
       composer install --no-dev --optimize-autoloader --no-interaction
       php artisan optimize:clear
@@ -16,9 +24,7 @@ services:
       php artisan route:cache
       php artisan view:cache
       
-      # Rendre le script executable
-      chmod +x start.sh
-    startCommand: ./start.sh
+    startCommand: php artisan serve --port=$PORT --host=0.0.0.0
     envVars:
       - key: APP_ENV
         value: production
