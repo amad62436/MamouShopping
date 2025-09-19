@@ -23,8 +23,21 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Exposer le port
-EXPOSE 10000
+# Configurer Apache pour Laravel
+RUN echo '<VirtualHost *:80>\n\
+    ServerAdmin webmaster@localhost\n\
+    DocumentRoot /var/www/html/public\n\
+    <Directory /var/www/html/public>\n\
+        Options Indexes FollowSymLinks\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+    ErrorLog ${APACHE_LOG_DIR}/error.log\n\
+    CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
-# Commande pour lancer Laravel
-CMD php artisan serve --host 0.0.0.0 --port 10000
+# Exposer le port (Render choisit automatiquement le port, donc pas besoin de hardcoder)
+EXPOSE 80
+
+# Commande pour lancer Apache
+CMD ["apache2-foreground"]
